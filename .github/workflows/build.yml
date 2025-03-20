@@ -1,0 +1,64 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  schedule:
+    # Prime the caches every Monday
+    - cron: 0 1 * * MON
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - "macos-13"          # x86_64
+          - "macos-14"          # arm64
+        packages:
+          - "mach"
+        ocaml-compiler:
+          - "4.14"
+          - "5.3"
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set-up OCaml ${{ matrix.ocaml-compiler }}
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+
+      - name: MacOS 13 Dependencies
+        if: matrix.os == 'macos-13'
+        run: |
+          # Select latest supported version
+          sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
+
+      - name: MacOS 14 Dependencies
+        if: matrix.os == 'macos-14'
+        run: |
+          # Select latest supported version
+          sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+
+      - name: Install dependencies
+        run: |
+          opam install ${{matrix.packages}} --with-test --deps-only
+
+      - name: Build
+        run: |
+          opam exec -- dune build @all
+
+      - name: Tests
+        run: |
+          opam exec -- dune build @runtest
+
+      - name: Opam Lint
+        run: |
+          opam lint mach.opam
