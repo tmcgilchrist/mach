@@ -1,0 +1,25 @@
+(executables
+ (libraries mach ctypes)
+ (flags
+  (:standard -w -32))           ; Ignore unused code while hacking
+ (package mach)
+ (public_names pidinfo)
+ (modules pidinfo))
+
+(rule
+ (alias build-c)
+ (deps pidinfo.c)
+ (target pidinfo_c)
+ (action (run cc %{deps} -o %{target})))
+
+(rule
+ (alias build-c)
+ (deps simple_vmmap.c)
+ (target simple_vmmap_c)
+ (action (run cc %{deps} -o %{target})))
+
+(rule
+ (alias build-c)
+ (deps examine_threads.c)
+ (target examine_threads_c)
+ (action (run cc %{deps} -o %{target})))

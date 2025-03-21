@@ -1,0 +1,6 @@
+(library
+ (name mach)
+ (public_name mach)
+ (wrapped false)
+ (enabled_if (= %{system} "macosx"))
+ (libraries ctypes-foreign))

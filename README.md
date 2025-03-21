@@ -15,7 +15,7 @@ My motivations for writing this are to:
 
 ## Examples
 
-Examples can be found in the [examples](./examples) directory of this repository.
+OCaml examples can be found in the [examples](./examples) directory of this repository. The C versions have been sourced from various locations and have attribution where possible.
 
 ## Platform support
 
