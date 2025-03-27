@@ -1,10 +1,10 @@
 (executables
  (libraries mach ctypes)
  (flags
-  (:standard -w -32))           ; Ignore unused code while hacking
+  (:standard -w -32-69-26-27))           ; Ignore unused code while hacking
  (package mach)
- (public_names pidinfo)
- (modules pidinfo))
+ (public_names pidinfo simple_vmmap)
+ (modules pidinfo simple_vmmap))
 
 (rule
  (alias build-c)

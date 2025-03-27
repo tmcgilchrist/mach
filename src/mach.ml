@@ -64,6 +64,16 @@ let vm_task_entry_t = Ctypes_static.Primitive Ctypes_primitive_types.Uint64_t
 
 (** Types and functions corresponding to `mach/port.h`  *)
 
+
+(**  [mach_port_name_t] - the local identity for a Mach port
+
+     The name is Mach port namespace specific.  It is used to
+     identify the rights held for that port by the task whose
+     namespace is implied [or specifically provided].
+
+     Use of this type usually implies just a name - no rights.
+     See [mach_port_t] for a type that implies a "named right."
+ *)
 type mach_port_name_t = natural_t
 let mach_port_name_t = natural_t
 
@@ -79,9 +89,25 @@ let boolean_t = Ctypes_static.Primitive Ctypes_primitive_types.Uint32_t
 type mach_msg_type_number_t = natural_t
 let mach_msg_type_number_t = natural_t
 
-(** Types corresponding to `mach/vm_region.h` *)
+(** Types corresponding to `mach/vm_prot.h` *)
 type vm_prot_t = integer_t
 let vm_prot_t = integer_t
+
+(** Protection values, defined as bits within the [vm_prot_t] type. *)
+
+(** Read permissions *)
+let vm_prot_read = Int32.of_int 0x01
+
+(** Write permissions *)
+let vm_prot_write = Int32.of_int 0x02
+
+(** Execute permissions *)
+let vm_prot_execute = Int32.of_int 0x04
+
+(** The default protection for newly-created virtual memory *)
+let vm_prot_default =  Int32.logor vm_prot_read vm_prot_write
+
+(** Types corresponding to `mach/vm_region.h` *)
 
 type vm_inherit_t = integer_t
 let vm_inherit_t = integer_t
@@ -127,12 +153,16 @@ let pages_reusable = field vm_region_submap_info_64 "pages_reusable" uint32_t
 let object_id_full = field vm_region_submap_info_64 "object_id_full" vm_object_id_t
 let () = seal vm_region_submap_info_64
 
+type vm_region_submap_info_data_64_t = vm_region_submap_info_64
+let vm_region_submap_info_data_64_t = vm_region_submap_info_64
+
 (** Types and functions from `mach/mach_vm.h` *)
 
 let mach_vm_region_recurse =
   foreign "mach_vm_region_recurse" (
     vm_task_entry_t @-> ptr mach_vm_address_t @-> ptr mach_vm_size_t
-    @-> ptr natural_t @-> ptr vm_region_recurse_info_t @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+    @-> ptr natural_t @-> ptr vm_region_recurse_info_t
+    @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
 
 (** Types and functions from `mach/mach_port.h` *)
 
@@ -154,14 +184,24 @@ let mach_port_deallocate =
 
 (** Types and functions from `mach/mach_traps.h` *)
 
+(* extern kern_return_t task_for_pid(
+        mach_port_name_t target_tport,
+        int pid,
+        mach_port_name_t *t);
+
+   TODO These uint64_t values should be natural_t according to the C headers.
+        Making them ints is convenient for now but should be changed later.
+ *)
 let task_for_pid =
-  foreign "task_for_pid" (mach_port_name_t @-> pid_t @-> ptr mach_port_name_t @-> returning kern_return_t)
+  foreign "task_for_pid" (uint64_t @-> pid_t @-> ptr uint64_t @-> returning kern_return_t)
+  (* foreign "task_for_pid" (mach_port_name_t @-> pid_t @-> ptr mach_port_name_t @-> returning kern_return_t) *)
 
 let task_name_for_pid =
   foreign "task_name_for_pid" (mach_port_name_t @-> pid_t @-> ptr mach_port_name_t @-> returning kern_return_t)
 
 let pid_for_task =
-  foreign "pid_for_task" (mach_port_name_t @-> ptr pid_t @-> returning kern_return_t)
+  foreign "pid_for_task" (uint64_t @-> ptr pid_t @-> returning kern_return_t)
+  (* foreign "pid_for_task" (mach_port_name_t @-> ptr pid_t @-> returning kern_return_t) *)
 
 (** Types defined in `mach/mach_error.h` *)
 type mach_error_t = natural_t
@@ -177,11 +217,11 @@ let mach_error_type =
 
 (** Types and functions defined in `mach/mach_init.h` *)
 
-let mach_thread_self =
+let mach_thread_self : unit -> mach_port_t =
   foreign "mach_thread_self" (void @-> returning mach_port_t)
 
-let mach_task_self =
-  foreign "mach_task_self" (void @-> returning uint64_t)
+let mach_task_self : unit -> mach_port_t =
+  foreign "mach_task_self" (void @-> returning mach_port_t)
 
 (** Types from `sys/_types.h` *)
 let uid_t = uint32_t
@@ -313,3 +353,6 @@ let () = seal proc_bsdshortinfo
 let proc_pidinfo =
   foreign "proc_pidinfo" (pid_t @-> int @-> uint64_t @-> ptr void @-> int @-> returning int)
 
+(* int proc_regionfilename(int pid, uint64_t address, void * buffer, uint32_t buffersize) *)
+let proc_regionfilename =
+  foreign "proc_regionfilename" (pid_t @-> uint64_t @-> ptr void @-> uint32_t @-> returning int)

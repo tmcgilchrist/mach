@@ -30,6 +30,6 @@ let handle_call pid =
 let () =
   if Array.length Sys.argv <> 2 then
     Printf.fprintf stderr "Usage: %s <pid>\n" Sys.executable_name
-    else
-      ignore (handle_call (PosixTypes.Pid.of_string Sys.argv.(1)))
+  else
+    ignore (handle_call (PosixTypes.Pid.of_string Sys.argv.(1)))
 
