@@ -55,12 +55,16 @@ type mach_port_t = uint64_t
 let mach_port_t = uint64_t
 
 type task_t = mach_port_t
+let task_t = mach_port_t
+
 type task_name_t = mach_port_t
-type user_addr_t = Unsigned.uint64
+let task_name_t = mach_port_t
+
 type vm_map_t = mach_port_t
+let vm_map_t = mach_port_t
 
 type vm_task_entry_t = mach_port_t
-let vm_task_entry_t = Ctypes_static.Primitive Ctypes_primitive_types.Uint64_t
+let vm_task_entry_t = mach_port_t
 
 (** Types and functions corresponding to `mach/port.h`  *)
 
@@ -77,8 +81,67 @@ let vm_task_entry_t = Ctypes_static.Primitive Ctypes_primitive_types.Uint64_t
 type mach_port_name_t = natural_t
 let mach_port_name_t = natural_t
 
-type kern_return_t = int32
+(** Types corresponding to `mach/kern_return.h` *)
+
+(* This type corresponds to `mach/arm/kern_return.h` or
+   `mach/i386/kern_return.h` as it is the same for
+   both architectures *)
+type kern_return_t = natural_t
 let kern_return_t = natural_t
+
+let kern_success : kern_return_t = 0l
+let kern_invalid_address: kern_return_t = 1l
+let kern_protection_failure: kern_return_t = 2l
+let kern_no_space: kern_return_t = 3l
+let kern_invalid_argument: kern_return_t = 4l
+let kern_failure: kern_return_t = 5l
+let kern_resource_shortage: kern_return_t = 6l
+let kern_not_receiver: kern_return_t = 7l
+let kern_no_access: kern_return_t = 8l
+let kern_memory_failure: kern_return_t = 9l
+let kern_memory_error: kern_return_t = 10l
+let kern_already_in_set: kern_return_t = 11l
+let kern_not_in_set: kern_return_t = 12l
+let kern_name_exists: kern_return_t = 13l
+let kern_aborted: kern_return_t = 14l
+let kern_invalid_name: kern_return_t = 15l
+let kern_invalid_task: kern_return_t = 16l
+let kern_invalid_right: kern_return_t = 17l
+let kern_invalid_value: kern_return_t = 18l
+let kern_urefs_overflow: kern_return_t = 19l
+let kern_invalid_capability: kern_return_t = 20l
+let kern_right_exists: kern_return_t = 21l
+let kern_invalid_host: kern_return_t = 22l
+let kern_memory_present: kern_return_t = 23l
+let kern_memory_data_moved: kern_return_t = 24l
+let kern_memory_restart_copy: kern_return_t = 25l
+let kern_invalid_processor_set: kern_return_t = 26l
+let kern_policy_limit: kern_return_t = 27l
+let kern_invalid_policy: kern_return_t = 28l
+let kern_invalid_object: kern_return_t = 29l
+let kern_already_waiting: kern_return_t = 30l
+let kern_default_set: kern_return_t = 31l
+let kern_exception_protected: kern_return_t = 32l
+let kern_invalid_ledger: kern_return_t = 33l
+let kern_invalid_memory_control: kern_return_t = 34l
+let kern_invalid_security: kern_return_t = 35l
+let kern_not_depressed: kern_return_t = 36l
+let kern_terminated: kern_return_t = 37l
+let kern_lock_set_destroyed: kern_return_t = 38l
+let kern_lock_unstable: kern_return_t = 39l
+let kern_lock_owned: kern_return_t = 40l
+let kern_lock_owned_self: kern_return_t = 41l
+let kern_semaphore_destroyed: kern_return_t = 42l
+let kern_rpc_server_terminated: kern_return_t = 43l
+let kern_rpc_terminate_orphan: kern_return_t = 44l
+let kern_rpc_continue_orphan: kern_return_t = 45l
+let kern_not_supported: kern_return_t = 46l
+let kern_node_down: kern_return_t = 47l
+let kern_not_waiting: kern_return_t = 48l
+let kern_operation_timed_out: kern_return_t = 49l
+let kern_codesign_error: kern_return_t = 50l
+let kern_policy_static: kern_return_t = 51l
+let kern_return_max: kern_return_t = 0x100l
 
 (** Types corresponds to `mach/i386/boolean.h` *)
 
@@ -129,6 +192,21 @@ let vm32_object_id_t = Ctypes_static.Primitive Ctypes_primitive_types.Uint32_t
 
 type vm_object_id_t = Unsigned.uint64
 let vm_object_id_t = Ctypes_static.Primitive Ctypes_primitive_types.Uint64_t
+
+type vm_region_basic_info_64
+let vm_region_basic_info_64 : vm_region_basic_info_64 structure typ = structure "vm_region_basic_info_64"
+let protection = field vm_region_basic_info_64 "protection" vm_prot_t (* present access protection *)
+let max_protection = field vm_region_basic_info_64 "max_protection" vm_prot_t (* max avail through vm_prot *)
+let inheritance = field vm_region_basic_info_64 "inheritance" vm_inherit_t (* behavior of map/obj on fork *)
+let shared = field vm_region_basic_info_64 "shared" boolean_t
+let reserved = field vm_region_basic_info_64 "reserved" boolean_t
+let offset = field vm_region_basic_info_64 "offset" memory_object_offset_t
+let behavior = field vm_region_basic_info_64 "behavior" vm_behavior_t
+let user_wired_count = field vm_region_basic_info_64 "user_wired_count" ushort
+let () = seal vm_region_basic_info_64
+
+type vm_region_basic_info_64_t = vm_region_basic_info_64
+let vm_region_basic_info_64_t = vm_region_basic_info_64
 
 type vm_region_submap_info_64
 let vm_region_submap_info_64 : vm_region_submap_info_64 structure typ = structure "vm_region_submap_info_64"
@@ -203,6 +281,15 @@ let pid_for_task =
   foreign "pid_for_task" (uint64_t @-> ptr pid_t @-> returning kern_return_t)
   (* foreign "pid_for_task" (mach_port_name_t @-> ptr pid_t @-> returning kern_return_t) *)
 
+(** Types defined in `mach/task_info.h` *)
+
+(** varying array of int *)
+
+let task_info_t = ptr integer_t
+
+type task_flavor_t = natural_t
+let task_flavor_t = natural_t
+
 (** Types defined in `mach/mach_error.h` *)
 type mach_error_t = natural_t
 let mach_error_t = natural_t
@@ -214,6 +301,219 @@ let mach_error_string =
 (** Returns a string with the error system, subsystem and code.  *)
 let mach_error_type =
   foreign "mach_error_type"  (mach_error_t @-> returning string)
+
+(** Types defined in `mach/types.h` *)
+
+type task_special_port_t = integer_t
+let task_special_port_t = integer_t
+
+type thread_act_t = mach_port_t
+let thread_act_t = mach_port_t
+
+type thread_act_array_t = thread_act_t
+let thread_act_array_t = thread_act_t
+
+(** Types defined in `mach/mach_types.h` *)
+
+(*@ capability strictly _DECREASING_.
+ * not ordered the other way around because we want TASK_FLAVOR_CONTROL
+ * to be closest to the itk_lock. see task.h.
+ *)
+type mach_task_flavor_t = Unsigned.uint32
+
+(** a task_t *)
+let task_flavor_control : mach_task_flavor_t  = Unsigned.UInt32.of_int 0
+
+(** a task_read_t *)
+let task_flavor_read : mach_task_flavor_t = Unsigned.UInt32.of_int 1
+
+(** a task_inspect_t *)
+let task_flavor_inspect : mach_task_flavor_t = Unsigned.UInt32.of_int 2
+
+(** a task_name_t *)
+let task_flavor_name : mach_task_flavor_t = Unsigned.UInt32.of_int 3
+let task_flavor_max = task_flavor_name
+
+(** Types defined in `mach/thread_status.h` *)
+
+(** Variable-length array *)
+type thread_state_t = natural_t
+let thread_state_t = natural_t
+
+type thread_state_flavor_t = integer_t
+let thread_state_flavor_t = integer_t
+
+(** Types defined in `mach/exception_types.h` *)
+
+(** Machine-independent exception definitions. *)
+
+(** Could not access memory.
+
+    Code contains kern_return_t describing error.
+    Subcode contains bad memory address *)
+let exc_bad_access : integer_t = 1l
+
+(** Instruction failed.
+
+    Illegal or undefined instruction or operand *)
+let exc_bad_instruction: integer_t = 2l
+
+(** Arithmetic exception.
+
+    Exact nature of exception is in code field *)
+let exc_arithmetic: integer_t = 3l
+
+(** Emulation instruction.
+
+    Emulation support instruction encountered.
+    Details in code and subcode fields *)
+let exc_emulation: integer_t = 4l
+
+(** Software generated exception.
+
+    Exact exception is in code field.
+    Codes 0 - 0xFFFF reserved to hardware
+    Codes 0x10000 - 0x1FFFF reserved for OS emulation (Unix)
+ *)
+let exc_software: integer_t = 5l
+
+(** Trace, breakpoint, etc.
+    Details in code field. *)
+let exc_breakpoint: integer_t = 6l
+
+(** System calls. *)
+let exc_syscall: integer_t = 7l
+
+(** Mach system calls. *)
+let exc_mach_syscall: integer_t = 8l
+
+(** RPC alert. *)
+let exc_rpc_alert: integer_t = 9l
+
+(** Abnormal process exit. *)
+let exc_crash: integer_t = 10l
+
+(** Hit resource consumption limit. *)
+let exc_resource: integer_t = 11l
+
+(** Violated guarded resource protections. *)
+let exc_guard: integer_t = 12l
+
+(** Abnormal process exited to corpse state. *)
+let exc_corpse_notify: integer_t = 13l
+
+(** Machine-independent exception behaviors *)
+
+(** Send a catch_exception_raise message including the identity.  *)
+let exception_default: integer_t = 1l
+
+(** Send a catch_exception_raise_state message including
+    the thread state. *)
+let exception_state: integer_t = 2l
+
+(** Send a catch_exception_raise_state_identity message including
+    the thread identity and state. *)
+let exception_state_identity: integer_t = 3l
+
+(** Send a catch_exception_raise_identity_protected message including protected task
+    and thread identity. *)
+let exception_identity_protected: integer_t = 4l
+
+(** Send a catch_exception_raise_state_identity_protected message including protected task
+    and thread identity plus the thread state. *)
+let exception_state_identity_protected: integer_t = 5l
+
+(** Send 64-bit code and subcode in the exception header *)
+let mach_exception_codes: integer_t = 0x80000000l
+
+type c_int = Unsigned.uint32
+let c_int = Ctypes_static.Primitive Ctypes_primitive_types.Uint32_t
+
+type exception_type_t = c_int
+let exception_type_t = c_int
+
+type exception_data_type_t = integer_t
+let exception_data_type_t = integer_t
+
+type mach_exception_data_type_t = int64
+type exception_behavior_t = c_int
+let exception_behavior_t = c_int
+
+type exception_mask_t = integer_t
+let exception_mask_t = integer_t
+let exception_mask_array_t = ptr exception_mask_t
+let exception_behavior_array_t = ptr exception_behavior_t
+type mach_exception_code_t = mach_exception_data_type_t
+type mach_exception_subcode_t = mach_exception_data_type_t
+
+let exception_flavor_array_t = ptr thread_state_flavor_t
+
+(** Types and functions defined in `mach/task.h` *)
+
+let mach_port_array_t = ptr mach_port_t
+
+(** Routine task_terminate *)
+let task_terminate =
+  foreign "task_terminate" (task_t @-> returning kern_return_t)
+
+(** Routine task_threads *)
+let task_threads =
+  foreign "task_threads" (task_t @-> ptr thread_act_array_t @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+
+(** Routine mach_ports_register *)
+let mach_ports_register =
+  foreign "mach_ports_register" (task_t @-> mach_port_array_t @-> mach_msg_type_number_t @-> returning kern_return_t)
+
+(** Routine mach_ports_lookup *)
+let mach_ports_lookup =
+  foreign "mach_ports_lookup" (task_t @-> ptr mach_port_array_t @-> mach_msg_type_number_t @-> returning kern_return_t)
+
+(** Routine task_info *)
+let task_info =
+  foreign "task_info" (task_name_t @-> task_flavor_t @-> task_info_t @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+
+(** Routine task_set_info *)
+let task_set_info =
+  foreign "task_set_info" (task_name_t @-> task_flavor_t @-> task_info_t @-> mach_msg_type_number_t @-> returning kern_return_t)
+
+(** Routine task_suspend *)
+let task_suspend =
+  foreign "task_suspend" (task_t @-> returning kern_return_t)
+
+(** Routine task_resume *)
+let task_resume =
+  foreign "task_resume" (task_t @-> returning kern_return_t)
+
+(** Routine task_get_special_port *)
+let task_get_special_port =
+  foreign "task_get_special_port" (task_t @-> task_special_port_t @-> ptr mach_port_t @-> returning kern_return_t)
+
+(** Routine task_set_special_port  *)
+let task_set_specical_port =
+  foreign "task_set_special_port" (task_t @-> int @-> mach_port_t @-> returning kern_return_t)
+
+(** Routine thread_create *)
+let thread_create =
+  foreign "thread_create" (task_t @-> ptr thread_act_t @-> returning kern_return_t)
+
+(** Routine thread_create_running *)
+let thread_create_running =
+  foreign "thread_create_running" (task_t @-> ptr thread_state_flavor_t @-> ptr thread_state_t @-> mach_msg_type_number_t @-> ptr thread_act_t @-> returning kern_return_t)
+
+(** Routine task_set_exception_ports *)
+let task_set_exception_ports =
+  foreign "task_set_exception_ports" (task_t @-> exception_mask_t @-> mach_port_t @-> exception_behavior_t @-> thread_state_flavor_t @-> returning kern_return_t)
+
+(* typedef mach_port_t             exception_handler_t;  *)
+type exception_handler_t = mach_port_t
+let exception_handler_t = mach_port_t
+
+(* typedef exception_handler_t     *exception_handler_array_t *)
+let exception_handler_array_t = ptr exception_handler_t
+
+(** Routine task_get_exception_ports *)
+let task_get_exception_ports =
+  foreign "task_get_exception_ports" (task_t @-> exception_mask_t @-> exception_mask_array_t @-> ptr mach_msg_type_number_t @-> exception_handler_array_t @-> exception_behavior_array_t @-> exception_flavor_array_t @-> returning kern_return_t)
 
 (** Types and functions defined in `mach/mach_init.h` *)
 
@@ -346,7 +646,6 @@ let pbsi_rgid = field proc_bsdshortinfo "bpsi_rgid" gid_t (* current rgid on pro
 let pbsi_svuid = field proc_bsdshortinfo "bpsi_svuid" uid_t (* current svuid on process *)
 let pbsi_svgid = field proc_bsdshortinfo "bpsi_svgid" gid_t (* current svgid on process *)
 let pbsi_rfu = field proc_bsdshortinfo "bpsi_rfu" uint32_t (* reserved for future use *)
-
 let () = seal proc_bsdshortinfo
 
 (* int proc_pidinfo(int pid, int flavor, uint64_t arg, void *buffer, int buffersize); *)
