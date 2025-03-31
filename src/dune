@@ -2,5 +2,7 @@
  (name mach)
  (public_name mach)
  (wrapped false)
+ (flags
+  (:standard -w -32-69))           ; Ignore unused code while hacking
  (enabled_if (= %{system} "macosx"))
  (libraries ctypes-foreign))
