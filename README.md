@@ -1,4 +1,4 @@
-## Mach 5
+# Mach 5
 
 An OCaml interface to the **user-space** API of the Mach 3.0 kernel that underlies macOS. This library targets the API defined in `usr/include/mach` under the specific MacOSX sdk. eg `/Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk/usr/include/`
 
