@@ -26,8 +26,6 @@ let vm_region_submap_info_count_64 =
 
 (** From `mach/kern_return.h` *)
 
-let kern_success : integer_t = 0l
-
 let format_display_size (size : uint64_t) =
   let scale = [| 'B'; 'K'; 'M'; 'G'; 'T'; 'P'; 'E' |] in
   let display_size = ref (Unsigned.UInt64.to_int size |> Float.of_int) in

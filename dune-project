@@ -13,7 +13,7 @@
  (synopsis "OCaml interface to Mach 3.0 kernel in macOS")
  (description "An OCaml interface to the user-space API of the Mach 3.0 kernel that underlies macOS.")
  (depends
-   (ocaml (>= 4.14))
+  (ocaml (>= 4.14))
   (ctypes-foreign (>= 0.23.0))
 
    ; Development dependencies
