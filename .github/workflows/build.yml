@@ -49,7 +49,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          opam install ${{matrix.packages}} --with-test --deps-only
+          opam install ${{matrix.packages}} --with-test --deps-only --with-dev-setup
 
       - name: Build
         run: |
