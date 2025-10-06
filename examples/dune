@@ -5,10 +5,14 @@
  ; Ignore unused code while hacking
  (package mach)
  (public_names pidinfo simple_vmmap)
+ (enabled_if
+  (= %{system} "macosx"))
  (modules pidinfo simple_vmmap))
 
 (rule
  (alias build-c)
+ (enabled_if
+  (= %{system} "macosx"))
  (deps pidinfo.c)
  (target pidinfo_c)
  (action
@@ -16,6 +20,8 @@
 
 (rule
  (alias build-c)
+ (enabled_if
+  (= %{system} "macosx"))
  (deps simple_vmmap.c)
  (target simple_vmmap_c)
  (action
@@ -23,6 +29,8 @@
 
 (rule
  (alias build-c)
+ (enabled_if
+  (= %{system} "macosx"))
  (deps examine_threads.c)
  (target examine_threads_c)
  (action
