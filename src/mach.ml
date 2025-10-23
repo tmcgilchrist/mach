@@ -330,6 +330,41 @@ let mach_vm_region_recurse =
     @-> ptr vm_region_recurse_info_t
     @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
 
+(** Routine mach_vm_read *)
+let mach_vm_read =
+  foreign "mach_vm_read"
+    (vm_map_t @-> mach_vm_address_t @-> mach_vm_size_t @-> ptr vm_offset_t
+   @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+
+(** Routine mach_vm_write *)
+let mach_vm_write =
+  foreign "mach_vm_write"
+    (vm_map_t @-> mach_vm_address_t @-> vm_offset_t @-> mach_msg_type_number_t
+   @-> returning kern_return_t)
+
+(** Routine mach_vm_protect *)
+let mach_vm_protect =
+  foreign "mach_vm_protect"
+    (vm_map_t @-> mach_vm_address_t @-> mach_vm_size_t @-> boolean_t
+   @-> vm_prot_t @-> returning kern_return_t)
+
+(** Routine mach_vm_allocate *)
+let mach_vm_allocate =
+  foreign "mach_vm_allocate"
+    (vm_map_t @-> ptr mach_vm_address_t @-> mach_vm_size_t @-> int
+   @-> returning kern_return_t)
+
+(** Routine mach_vm_deallocate *)
+let mach_vm_deallocate =
+  foreign "mach_vm_deallocate"
+    (vm_map_t @-> mach_vm_address_t @-> mach_vm_size_t
+   @-> returning kern_return_t)
+
+(** Routine vm_deallocate for cleanup *)
+let vm_deallocate =
+  foreign "vm_deallocate"
+    (vm_map_t @-> vm_offset_t @-> mach_vm_size_t @-> returning kern_return_t)
+
 (** Types and functions from `mach/mach_port.h` *)
 
 type ipc_space_t = mach_port_t
@@ -447,6 +482,105 @@ type thread_state_flavor_t = integer_t
 
 let thread_state_flavor_t = integer_t
 
+(** Thread state flavors for x86_64 from `mach/i386/thread_status.h` *)
+
+let x86_thread_state32 : thread_state_flavor_t = 1l
+let x86_float_state32 : thread_state_flavor_t = 2l
+let x86_exception_state32 : thread_state_flavor_t = 3l
+let x86_thread_state64 : thread_state_flavor_t = 4l
+let x86_float_state64 : thread_state_flavor_t = 5l
+let x86_exception_state64 : thread_state_flavor_t = 6l
+let x86_thread_state : thread_state_flavor_t = 7l
+let x86_float_state : thread_state_flavor_t = 8l
+let x86_exception_state : thread_state_flavor_t = 9l
+let x86_debug_state32 : thread_state_flavor_t = 10l
+let x86_debug_state64 : thread_state_flavor_t = 11l
+let x86_debug_state : thread_state_flavor_t = 12l
+let x86_thread_state_count = 42
+let x86_float_state_count = 64
+
+(** Thread state flavors for ARM64 from `mach/arm/thread_status.h` *)
+
+let arm_thread_state64 : thread_state_flavor_t = 6l
+let arm_exception_state64 : thread_state_flavor_t = 7l
+let arm_neon_state64 : thread_state_flavor_t = 17l
+let arm_thread_state64_count = 68
+let arm_neon_state64_count = 256
+
+(** x86_64 thread state structure *)
+
+type x86_thread_state64_t
+
+let x86_thread_state64_t : x86_thread_state64_t structure typ =
+  structure "x86_thread_state64_t"
+
+let rax = field x86_thread_state64_t "__rax" uint64_t
+let rbx = field x86_thread_state64_t "__rbx" uint64_t
+let rcx = field x86_thread_state64_t "__rcx" uint64_t
+let rdx = field x86_thread_state64_t "__rdx" uint64_t
+let rdi = field x86_thread_state64_t "__rdi" uint64_t
+let rsi = field x86_thread_state64_t "__rsi" uint64_t
+let rbp = field x86_thread_state64_t "__rbp" uint64_t
+let rsp = field x86_thread_state64_t "__rsp" uint64_t
+let r8 = field x86_thread_state64_t "__r8" uint64_t
+let r9 = field x86_thread_state64_t "__r9" uint64_t
+let r10 = field x86_thread_state64_t "__r10" uint64_t
+let r11 = field x86_thread_state64_t "__r11" uint64_t
+let r12 = field x86_thread_state64_t "__r12" uint64_t
+let r13 = field x86_thread_state64_t "__r13" uint64_t
+let r14 = field x86_thread_state64_t "__r14" uint64_t
+let r15 = field x86_thread_state64_t "__r15" uint64_t
+let rip = field x86_thread_state64_t "__rip" uint64_t
+let rflags = field x86_thread_state64_t "__rflags" uint64_t
+let cs = field x86_thread_state64_t "__cs" uint64_t
+let fs = field x86_thread_state64_t "__fs" uint64_t
+let gs = field x86_thread_state64_t "__gs" uint64_t
+let () = seal x86_thread_state64_t
+
+(** ARM64 thread state structure *)
+
+type arm_thread_state64_t
+
+let arm_thread_state64_t : arm_thread_state64_t structure typ =
+  structure "arm_thread_state64_t"
+
+let x0 = field arm_thread_state64_t "__x0" uint64_t
+let x1 = field arm_thread_state64_t "__x1" uint64_t
+let x2 = field arm_thread_state64_t "__x2" uint64_t
+let x3 = field arm_thread_state64_t "__x3" uint64_t
+let x4 = field arm_thread_state64_t "__x4" uint64_t
+let x5 = field arm_thread_state64_t "__x5" uint64_t
+let x6 = field arm_thread_state64_t "__x6" uint64_t
+let x7 = field arm_thread_state64_t "__x7" uint64_t
+let x8 = field arm_thread_state64_t "__x8" uint64_t
+let x9 = field arm_thread_state64_t "__x9" uint64_t
+let x10 = field arm_thread_state64_t "__x10" uint64_t
+let x11 = field arm_thread_state64_t "__x11" uint64_t
+let x12 = field arm_thread_state64_t "__x12" uint64_t
+let x13 = field arm_thread_state64_t "__x13" uint64_t
+let x14 = field arm_thread_state64_t "__x14" uint64_t
+let x15 = field arm_thread_state64_t "__x15" uint64_t
+let x16 = field arm_thread_state64_t "__x16" uint64_t
+let x17 = field arm_thread_state64_t "__x17" uint64_t
+let x18 = field arm_thread_state64_t "__x18" uint64_t
+let x19 = field arm_thread_state64_t "__x19" uint64_t
+let x20 = field arm_thread_state64_t "__x20" uint64_t
+let x21 = field arm_thread_state64_t "__x21" uint64_t
+let x22 = field arm_thread_state64_t "__x22" uint64_t
+let x23 = field arm_thread_state64_t "__x23" uint64_t
+let x24 = field arm_thread_state64_t "__x24" uint64_t
+let x25 = field arm_thread_state64_t "__x25" uint64_t
+let x26 = field arm_thread_state64_t "__x26" uint64_t
+let x27 = field arm_thread_state64_t "__x27" uint64_t
+let x28 = field arm_thread_state64_t "__x28" uint64_t
+let fp = field arm_thread_state64_t "__fp" uint64_t
+let lr = field arm_thread_state64_t "__lr" uint64_t
+let sp = field arm_thread_state64_t "__sp" uint64_t
+let pc = field arm_thread_state64_t "__pc" uint64_t
+let cpsr = field arm_thread_state64_t "__cpsr" uint32_t
+let pad = field arm_thread_state64_t "__pad" uint32_t
+let () = seal arm_thread_state64_t
+
 (** Types defined in `mach/exception_types.h` *)
 
 (** Machine-independent exception definitions. *)
@@ -502,6 +636,27 @@ let exc_guard : integer_t = 12l
 
 (** Abnormal process exited to corpse state. *)
 let exc_corpse_notify : integer_t = 13l
+
+(** EXC_SOFT_SIGNAL is used with EXC_SOFTWARE to indicate a Unix signal *)
+let exc_soft_signal : integer_t = 0x10003l
+
+(** Exception masks for use with task_set_exception_ports *)
+let exc_mask_bad_access : integer_t = Int32.shift_left 1l 0
+let exc_mask_bad_instruction : integer_t = Int32.shift_left 1l 1
+let exc_mask_arithmetic : integer_t = Int32.shift_left 1l 2
+let exc_mask_emulation : integer_t = Int32.shift_left 1l 3
+let exc_mask_software : integer_t = Int32.shift_left 1l 4
+let exc_mask_breakpoint : integer_t = Int32.shift_left 1l 5
+let exc_mask_syscall : integer_t = Int32.shift_left 1l 6
+let exc_mask_mach_syscall : integer_t = Int32.shift_left 1l 7
+let exc_mask_rpc_alert : integer_t = Int32.shift_left 1l 8
+let exc_mask_crash : integer_t = Int32.shift_left 1l 9
+let exc_mask_resource : integer_t = Int32.shift_left 1l 10
+let exc_mask_guard : integer_t = Int32.shift_left 1l 11
+let exc_mask_corpse_notify : integer_t = Int32.shift_left 1l 12
+
+(** Mask for all exceptions *)
+let exc_mask_all : integer_t = 0x1FFFl
 
 (** Machine-independent exception behaviors *)
 
@@ -619,6 +774,32 @@ let thread_create_running =
   foreign "thread_create_running"
     (task_t @-> ptr thread_state_flavor_t @-> ptr thread_state_t
    @-> mach_msg_type_number_t @-> ptr thread_act_t @-> returning kern_return_t)
+
+(** Routine thread_get_state *)
+let thread_get_state =
+  foreign "thread_get_state"
+    (thread_act_t @-> thread_state_flavor_t @-> ptr thread_state_t
+   @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+
+(** Routine thread_set_state *)
+let thread_set_state =
+  foreign "thread_set_state"
+    (thread_act_t @-> thread_state_flavor_t @-> ptr thread_state_t
+   @-> mach_msg_type_number_t @-> returning kern_return_t)
+
+(** Types and functions from `mach/thread_info.h` *)
+
+let thread_info_t = ptr integer_t
+
+type thread_flavor_t = natural_t
+
+let thread_flavor_t = natural_t
+
+(** Routine thread_info *)
+let thread_info =
+  foreign "thread_info"
+    (thread_act_t @-> thread_flavor_t @-> thread_info_t
+   @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
 
 (** Routine task_set_exception_ports *)
 let task_set_exception_ports =
