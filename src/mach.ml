@@ -384,6 +384,14 @@ let mach_port_deallocate =
   foreign "mach_port_deallocate"
     (ipc_space_t @-> mach_port_name_t @-> returning kern_return_t)
 
+(** mach_msg_type_name_t constants for port rights *)
+let mach_msg_type_make_send : int32 = 20l
+
+let mach_port_insert_right =
+  foreign "mach_port_insert_right"
+    (ipc_space_t @-> mach_port_name_t @-> mach_port_t @-> int32_t
+   @-> returning kern_return_t)
+
 (* let mach_port_names = *)
 (*   foreign "mach_port_names" (ipc_space_t @-> ptr mach_port_name_array_t @-> ptr mach_msg_type_number_t *)
 (*     @-> ptr mach_port_type_array_t @-> ptr mach_msg_type_number_t @-> returning kern_return_t) *)
@@ -801,6 +809,48 @@ let thread_info =
   foreign "thread_info"
     (thread_act_t @-> thread_flavor_t @-> thread_info_t
    @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+
+(** Thread info flavors from mach/thread_info.h *)
+let thread_basic_info : thread_flavor_t = 3l
+
+let thread_identifier_info : thread_flavor_t = 4l
+let thread_basic_info_count = 10
+let thread_identifier_info_count = 6
+
+type thread_basic_info_t
+(** Thread basic info structure *)
+
+let thread_basic_info_t : thread_basic_info_t structure typ =
+  structure "thread_basic_info"
+
+let user_time = field thread_basic_info_t "user_time" (array 2 int32_t)
+let system_time = field thread_basic_info_t "system_time" (array 2 int32_t)
+let cpu_usage = field thread_basic_info_t "cpu_usage" int32_t
+let policy = field thread_basic_info_t "policy" int32_t
+let run_state = field thread_basic_info_t "run_state" int32_t
+let flags = field thread_basic_info_t "flags" int32_t
+let suspend_count = field thread_basic_info_t "suspend_count" int32_t
+let sleep_time = field thread_basic_info_t "sleep_time" int32_t
+let () = seal thread_basic_info_t
+
+type thread_identifier_info_t
+(** Thread identifier info structure *)
+
+let thread_identifier_info_t : thread_identifier_info_t structure typ =
+  structure "thread_identifier_info"
+
+let thread_id = field thread_identifier_info_t "thread_id" uint64_t
+let thread_handle = field thread_identifier_info_t "thread_handle" uint64_t
+let dispatch_qaddr = field thread_identifier_info_t "dispatch_qaddr" uint64_t
+let () = seal thread_identifier_info_t
+
+(** Routine thread_suspend *)
+let thread_suspend =
+  foreign "thread_suspend" (thread_act_t @-> returning kern_return_t)
+
+(** Routine thread_resume *)
+let thread_resume =
+  foreign "thread_resume" (thread_act_t @-> returning kern_return_t)
 
 (** Routine task_set_exception_ports *)
 let task_set_exception_ports =
