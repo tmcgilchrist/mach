@@ -23,4 +23,4 @@ The following table describes the current CI set-up:
 | Target                 | XCode  | build | ctest | run |
 |------------------------|--------|-------|-------|-----|
 | `x86_64-apple-darwin`  | 15.2.* | ✓     | ✓     | ✓   |
-| `aarch64-apple-darwin` | 15.4.* | ✓     | ✓     | ✓   |
+| `aarch64-apple-darwin` | 16.4.* | ✓     | ✓     | ✓   |
