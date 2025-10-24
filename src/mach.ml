@@ -642,6 +642,7 @@ let exc_soft_signal : integer_t = 0x10003l
 
 (** Exception masks for use with task_set_exception_ports *)
 let exc_mask_bad_access : integer_t = Int32.shift_left 1l 0
+
 let exc_mask_bad_instruction : integer_t = Int32.shift_left 1l 1
 let exc_mask_arithmetic : integer_t = Int32.shift_left 1l 2
 let exc_mask_emulation : integer_t = Int32.shift_left 1l 3

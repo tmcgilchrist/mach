@@ -17,7 +17,7 @@ jobs:
       matrix:
         os:
           - "macos-13"          # x86_64
-          - "macos-14"          # arm64
+          - "macos-15"          # arm64
         packages:
           - "mach"
         ocaml-compiler:
@@ -41,11 +41,11 @@ jobs:
           # Select latest supported version
           sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
 
-      - name: MacOS 14 Dependencies
-        if: matrix.os == 'macos-14'
+      - name: MacOS 15 Dependencies
+        if: matrix.os == 'macos-15'
         run: |
           # Select latest supported version
-          sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+          sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer
 
       - name: Install dependencies
         run: |
