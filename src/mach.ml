@@ -648,24 +648,48 @@ let exc_corpse_notify : integer_t = 13l
 (** EXC_SOFT_SIGNAL is used with EXC_SOFTWARE to indicate a Unix signal *)
 let exc_soft_signal : integer_t = 0x10003l
 
+(** Exception mask for an exception type, as [1 lsl exc].
+
+    Exception types start at 1 (EXC_BAD_ACCESS), so bit 0 is never part of a
+    valid mask. task_set_exception_ports rejects the whole call with
+    KERN_INVALID_ARGUMENT if bit 0 is set. *)
+let exc_mask_of_type (exc : integer_t) : integer_t =
+  Int32.shift_left 1l (Int32.to_int exc)
+
 (** Exception masks for use with task_set_exception_ports *)
-let exc_mask_bad_access : integer_t = Int32.shift_left 1l 0
+let exc_mask_bad_access : integer_t = exc_mask_of_type exc_bad_access
 
-let exc_mask_bad_instruction : integer_t = Int32.shift_left 1l 1
-let exc_mask_arithmetic : integer_t = Int32.shift_left 1l 2
-let exc_mask_emulation : integer_t = Int32.shift_left 1l 3
-let exc_mask_software : integer_t = Int32.shift_left 1l 4
-let exc_mask_breakpoint : integer_t = Int32.shift_left 1l 5
-let exc_mask_syscall : integer_t = Int32.shift_left 1l 6
-let exc_mask_mach_syscall : integer_t = Int32.shift_left 1l 7
-let exc_mask_rpc_alert : integer_t = Int32.shift_left 1l 8
-let exc_mask_crash : integer_t = Int32.shift_left 1l 9
-let exc_mask_resource : integer_t = Int32.shift_left 1l 10
-let exc_mask_guard : integer_t = Int32.shift_left 1l 11
-let exc_mask_corpse_notify : integer_t = Int32.shift_left 1l 12
+let exc_mask_bad_instruction : integer_t = exc_mask_of_type exc_bad_instruction
+let exc_mask_arithmetic : integer_t = exc_mask_of_type exc_arithmetic
+let exc_mask_emulation : integer_t = exc_mask_of_type exc_emulation
+let exc_mask_software : integer_t = exc_mask_of_type exc_software
+let exc_mask_breakpoint : integer_t = exc_mask_of_type exc_breakpoint
+let exc_mask_syscall : integer_t = exc_mask_of_type exc_syscall
+let exc_mask_mach_syscall : integer_t = exc_mask_of_type exc_mach_syscall
+let exc_mask_rpc_alert : integer_t = exc_mask_of_type exc_rpc_alert
+let exc_mask_crash : integer_t = exc_mask_of_type exc_crash
+let exc_mask_resource : integer_t = exc_mask_of_type exc_resource
+let exc_mask_guard : integer_t = exc_mask_of_type exc_guard
+let exc_mask_corpse_notify : integer_t = exc_mask_of_type exc_corpse_notify
 
-(** Mask for all exceptions *)
-let exc_mask_all : integer_t = 0x1FFFl
+(** Mask for all exceptions, matching EXC_MASK_ALL in <mach/exception_types.h>
+    (0x1BFE). Note that EXC_MASK_CRASH and EXC_MASK_CORPSE_NOTIFY are
+    deliberately excluded: they belong to the crash reporter, not a debugger. *)
+let exc_mask_all : integer_t =
+  List.fold_left Int32.logor 0l
+    [
+      exc_mask_bad_access;
+      exc_mask_bad_instruction;
+      exc_mask_arithmetic;
+      exc_mask_emulation;
+      exc_mask_software;
+      exc_mask_breakpoint;
+      exc_mask_syscall;
+      exc_mask_mach_syscall;
+      exc_mask_rpc_alert;
+      exc_mask_resource;
+      exc_mask_guard;
+    ]
 
 (** Machine-independent exception behaviors *)
 
@@ -689,6 +713,11 @@ let exception_state_identity_protected : integer_t = 5l
 
 (** Send 64-bit code and subcode in the exception header *)
 let mach_exception_codes : integer_t = 0x80000000l
+
+(** THREAD_STATE_NONE. The thread state flavor to pass to
+    task_set_exception_ports when the behavior is EXCEPTION_DEFAULT, i.e. when
+    no thread state is wanted in the exception message. *)
+let thread_state_none : thread_state_flavor_t = 5l
 
 type c_int = Unsigned.uint32
 
