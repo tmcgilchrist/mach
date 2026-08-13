@@ -1,4 +1,5 @@
 (lang dune 3.7)
+(using ctypes 0.3)
 (name mach)
 (generate_opam_files true)
 

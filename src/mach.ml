@@ -597,127 +597,63 @@ let () = seal arm_thread_state64_t
 
     Code contains kern_return_t describing error. Subcode contains bad memory
     address *)
-let exc_bad_access : integer_t = 1l
+(* Exception constants come from the system headers via ctypes stub
+   generation; see type_description.ml. They used to be transcribed here, and
+   every exc_mask_* was one bit too low as a result: a mask is (1 lsl exc) and
+   exception types start at 1, so bit 0 is never valid and
+   task_set_exception_ports rejected the whole call. *)
 
-(** Instruction failed.
+(** Machine-independent exception types. *)
 
-    Illegal or undefined instruction or operand *)
-let exc_bad_instruction : integer_t = 2l
-
-(** Arithmetic exception.
-
-    Exact nature of exception is in code field *)
-let exc_arithmetic : integer_t = 3l
-
-(** Emulation instruction.
-
-    Emulation support instruction encountered. Details in code and subcode
-    fields *)
-let exc_emulation : integer_t = 4l
-
-(** Software generated exception.
-
-    Exact exception is in code field. Codes 0 - 0xFFFF reserved to hardware
-    Codes 0x10000 - 0x1FFFF reserved for OS emulation (Unix) *)
-let exc_software : integer_t = 5l
-
-(** Trace, breakpoint, etc. Details in code field. *)
-let exc_breakpoint : integer_t = 6l
-
-(** System calls. *)
-let exc_syscall : integer_t = 7l
-
-(** Mach system calls. *)
-let exc_mach_syscall : integer_t = 8l
-
-(** RPC alert. *)
-let exc_rpc_alert : integer_t = 9l
-
-(** Abnormal process exit. *)
-let exc_crash : integer_t = 10l
-
-(** Hit resource consumption limit. *)
-let exc_resource : integer_t = 11l
-
-(** Violated guarded resource protections. *)
-let exc_guard : integer_t = 12l
-
-(** Abnormal process exited to corpse state. *)
-let exc_corpse_notify : integer_t = 13l
+let exc_bad_access : integer_t = C.Types.exc_bad_access
+let exc_bad_instruction : integer_t = C.Types.exc_bad_instruction
+let exc_arithmetic : integer_t = C.Types.exc_arithmetic
+let exc_emulation : integer_t = C.Types.exc_emulation
+let exc_software : integer_t = C.Types.exc_software
+let exc_breakpoint : integer_t = C.Types.exc_breakpoint
+let exc_syscall : integer_t = C.Types.exc_syscall
+let exc_mach_syscall : integer_t = C.Types.exc_mach_syscall
+let exc_rpc_alert : integer_t = C.Types.exc_rpc_alert
+let exc_crash : integer_t = C.Types.exc_crash
+let exc_resource : integer_t = C.Types.exc_resource
+let exc_guard : integer_t = C.Types.exc_guard
+let exc_corpse_notify : integer_t = C.Types.exc_corpse_notify
 
 (** EXC_SOFT_SIGNAL is used with EXC_SOFTWARE to indicate a Unix signal *)
-let exc_soft_signal : integer_t = 0x10003l
-
-(** Exception mask for an exception type, as [1 lsl exc].
-
-    Exception types start at 1 (EXC_BAD_ACCESS), so bit 0 is never part of a
-    valid mask. task_set_exception_ports rejects the whole call with
-    KERN_INVALID_ARGUMENT if bit 0 is set. *)
-let exc_mask_of_type (exc : integer_t) : integer_t =
-  Int32.shift_left 1l (Int32.to_int exc)
+let exc_soft_signal : integer_t = C.Types.exc_soft_signal
 
 (** Exception masks for use with task_set_exception_ports *)
-let exc_mask_bad_access : integer_t = exc_mask_of_type exc_bad_access
 
-let exc_mask_bad_instruction : integer_t = exc_mask_of_type exc_bad_instruction
-let exc_mask_arithmetic : integer_t = exc_mask_of_type exc_arithmetic
-let exc_mask_emulation : integer_t = exc_mask_of_type exc_emulation
-let exc_mask_software : integer_t = exc_mask_of_type exc_software
-let exc_mask_breakpoint : integer_t = exc_mask_of_type exc_breakpoint
-let exc_mask_syscall : integer_t = exc_mask_of_type exc_syscall
-let exc_mask_mach_syscall : integer_t = exc_mask_of_type exc_mach_syscall
-let exc_mask_rpc_alert : integer_t = exc_mask_of_type exc_rpc_alert
-let exc_mask_crash : integer_t = exc_mask_of_type exc_crash
-let exc_mask_resource : integer_t = exc_mask_of_type exc_resource
-let exc_mask_guard : integer_t = exc_mask_of_type exc_guard
-let exc_mask_corpse_notify : integer_t = exc_mask_of_type exc_corpse_notify
+let exc_mask_bad_access : integer_t = C.Types.exc_mask_bad_access
+let exc_mask_bad_instruction : integer_t = C.Types.exc_mask_bad_instruction
+let exc_mask_arithmetic : integer_t = C.Types.exc_mask_arithmetic
+let exc_mask_emulation : integer_t = C.Types.exc_mask_emulation
+let exc_mask_software : integer_t = C.Types.exc_mask_software
+let exc_mask_breakpoint : integer_t = C.Types.exc_mask_breakpoint
+let exc_mask_syscall : integer_t = C.Types.exc_mask_syscall
+let exc_mask_mach_syscall : integer_t = C.Types.exc_mask_mach_syscall
+let exc_mask_rpc_alert : integer_t = C.Types.exc_mask_rpc_alert
+let exc_mask_crash : integer_t = C.Types.exc_mask_crash
+let exc_mask_resource : integer_t = C.Types.exc_mask_resource
+let exc_mask_guard : integer_t = C.Types.exc_mask_guard
+let exc_mask_corpse_notify : integer_t = C.Types.exc_mask_corpse_notify
 
-(** Mask for all exceptions, matching EXC_MASK_ALL in <mach/exception_types.h>
-    (0x1BFE). Note that EXC_MASK_CRASH and EXC_MASK_CORPSE_NOTIFY are
-    deliberately excluded: they belong to the crash reporter, not a debugger. *)
-let exc_mask_all : integer_t =
-  List.fold_left Int32.logor 0l
-    [
-      exc_mask_bad_access;
-      exc_mask_bad_instruction;
-      exc_mask_arithmetic;
-      exc_mask_emulation;
-      exc_mask_software;
-      exc_mask_breakpoint;
-      exc_mask_syscall;
-      exc_mask_mach_syscall;
-      exc_mask_rpc_alert;
-      exc_mask_resource;
-      exc_mask_guard;
-    ]
+(** EXC_MASK_ALL. Excludes EXC_MASK_CRASH and EXC_MASK_CORPSE_NOTIFY, which
+    belong to the crash reporter rather than to a debugger. *)
+let exc_mask_all : integer_t = C.Types.exc_mask_all
 
 (** Machine-independent exception behaviors *)
 
-(** Send a catch_exception_raise message including the identity. *)
-let exception_default : integer_t = 1l
-
-(** Send a catch_exception_raise_state message including the thread state. *)
-let exception_state : integer_t = 2l
-
-(** Send a catch_exception_raise_state_identity message including the thread
-    identity and state. *)
-let exception_state_identity : integer_t = 3l
-
-(** Send a catch_exception_raise_identity_protected message including protected
-    task and thread identity. *)
-let exception_identity_protected : integer_t = 4l
-
-(** Send a catch_exception_raise_state_identity_protected message including
-    protected task and thread identity plus the thread state. *)
-let exception_state_identity_protected : integer_t = 5l
+let exception_default : integer_t = C.Types.exception_default
+let exception_state : integer_t = C.Types.exception_state
+let exception_state_identity : integer_t = C.Types.exception_state_identity
 
 (** Send 64-bit code and subcode in the exception header *)
-let mach_exception_codes : integer_t = 0x80000000l
+let mach_exception_codes : integer_t = C.Types.mach_exception_codes
 
-(** THREAD_STATE_NONE. The thread state flavor to pass to
-    task_set_exception_ports when the behavior is EXCEPTION_DEFAULT, i.e. when
-    no thread state is wanted in the exception message. *)
-let thread_state_none : thread_state_flavor_t = 5l
+(** THREAD_STATE_NONE: the flavor to pass to task_set_exception_ports when the
+    behavior is EXCEPTION_DEFAULT, i.e. when no thread state is wanted. *)
+let thread_state_none : thread_state_flavor_t = C.Types.thread_state_none
 
 type c_int = Unsigned.uint32
 

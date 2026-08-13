@@ -7,4 +7,17 @@
  ; Ignore unused code while hacking
  (enabled_if
   (= %{system} "macosx"))
+ ; Constants come from the system headers via ctypes stub generation rather
+ ; than being transcribed into mach.ml. The C compiler resolves each one, so a
+ ; value cannot silently disagree with the header - which is how every
+ ; exc_mask_* ended up one bit too low.
+ (ctypes
+  (external_library_name none)
+  (build_flags_resolver vendored)
+  (headers
+   (include "mach/mach.h" "mach/thread_status.h" "mach/exception_types.h"))
+  (type_description
+   (instance Types)
+   (functor Type_description))
+  (generated_entry_point C))
  (libraries ctypes-foreign))
