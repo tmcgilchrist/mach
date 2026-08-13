@@ -17,4 +17,4 @@
   (ctypes-foreign (>= 0.23.0))
 
    ; Development dependencies
-  (ocamlformat (and :with-dev-setup (= 0.27.0)))))
+  (ocamlformat (and :with-dev-setup (= 0.29.0)))))
