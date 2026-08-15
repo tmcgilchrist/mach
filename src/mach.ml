@@ -62,9 +62,10 @@ type mach_port_context_t = mach_vm_address_t
 
 let mach_port_context_t = mach_vm_address_t
 
-type mach_port_t = uint64_t
+type mach_port_t = Unsigned.uint32
+(** A port name, [natural_t] wide. *)
 
-let mach_port_t = uint64_t
+let mach_port_t = uint32_t
 
 type task_t = mach_port_t
 
@@ -177,13 +178,13 @@ let vm_prot_t = integer_t
 (** Protection values, defined as bits within the [vm_prot_t] type. *)
 
 (** Read permissions *)
-let vm_prot_read = Int32.of_int 0x01
+let vm_prot_read = C.Types.vm_prot_read
 
 (** Write permissions *)
-let vm_prot_write = Int32.of_int 0x02
+let vm_prot_write = C.Types.vm_prot_write
 
 (** Execute permissions *)
-let vm_prot_execute = Int32.of_int 0x04
+let vm_prot_execute = C.Types.vm_prot_execute
 
 (** The default protection for newly-created virtual memory *)
 let vm_prot_default = Int32.logor vm_prot_read vm_prot_write
@@ -217,105 +218,49 @@ type vm_object_id_t = Unsigned.uint64
 
 let vm_object_id_t = Ctypes_static.Primitive Ctypes_primitive_types.Uint64_t
 
-type vm_region_basic_info_64
+type vm_region_basic_info_64 = C.Types.vm_region_basic_info_64
 
 let vm_region_basic_info_64 : vm_region_basic_info_64 structure typ =
-  structure "vm_region_basic_info_64"
+  C.Types.vm_region_basic_info_64
 
-let protection =
-  field vm_region_basic_info_64 "protection"
-    vm_prot_t (* present access protection *)
-
-let max_protection =
-  field vm_region_basic_info_64 "max_protection"
-    vm_prot_t (* max avail through vm_prot *)
-
-let inheritance =
-  field vm_region_basic_info_64 "inheritance"
-    vm_inherit_t (* behavior of map/obj on fork *)
-
-let shared = field vm_region_basic_info_64 "shared" boolean_t
-let reserved = field vm_region_basic_info_64 "reserved" boolean_t
-let offset = field vm_region_basic_info_64 "offset" memory_object_offset_t
-let behavior = field vm_region_basic_info_64 "behavior" vm_behavior_t
-let user_wired_count = field vm_region_basic_info_64 "user_wired_count" ushort
-let () = seal vm_region_basic_info_64
+let protection = C.Types.vmr_protection
+let max_protection = C.Types.vmr_max_protection
+let inheritance = C.Types.vmr_inheritance
+let shared = C.Types.vmr_shared
+let reserved = C.Types.vmr_reserved
+let offset = C.Types.vmr_offset
+let behavior = C.Types.vmr_behavior
+let user_wired_count = C.Types.vmr_user_wired_count
 
 type vm_region_basic_info_64_t = vm_region_basic_info_64
 
 let vm_region_basic_info_64_t = vm_region_basic_info_64
 
-type vm_region_submap_info_64
+type vm_region_submap_info_64 = C.Types.vm_region_submap_info_64
 
 let vm_region_submap_info_64 : vm_region_submap_info_64 structure typ =
-  structure "vm_region_submap_info_64"
+  C.Types.vm_region_submap_info_64
 
-let protection =
-  field vm_region_submap_info_64 "protection"
-    vm_prot_t (* present access protection *)
-
-let max_protection =
-  field vm_region_submap_info_64 "max_protection"
-    vm_prot_t (* max avail through vm_prot *)
-
-let inheritance =
-  field vm_region_submap_info_64 "inheritance"
-    vm_inherit_t (* behavior of map/obj on fork *)
-
-let offset =
-  field vm_region_submap_info_64 "offset"
-    memory_object_offset_t (* offset into object/map *)
-
-let user_tag =
-  field vm_region_submap_info_64 "user_tag" uint32_t (* user tag on map entry *)
-
-let pages_resident =
-  field vm_region_submap_info_64 "pages_resident"
-    uint32_t (* only valid for objects *)
-
-let pages_shared_now_private =
-  field vm_region_submap_info_64 "pages_shared_now_private"
-    uint32_t (* only for objects *)
-
-let pages_swapped_out =
-  field vm_region_submap_info_64 "pages_swapped_out"
-    uint32_t (* only for objects *)
-
-let pages_dirtied =
-  field vm_region_submap_info_64 "pages_dirtied" uint32_t (* only for objects *)
-
-let ref_count =
-  field vm_region_submap_info_64 "ref_count" uint32_t (* obj/map mappers, etc *)
-
-let shadow_depth =
-  field vm_region_submap_info_64 "shadow_depth" uint16_t (* only for obj *)
-
-let external_pager =
-  field vm_region_submap_info_64 "external_pager" uchar (* only for obj *)
-
-let share_mode =
-  field vm_region_submap_info_64 "share_mode" uchar (* see enumeration *)
-
-let is_submap =
-  field vm_region_submap_info_64 "is_submap" int32_t (* submap vs obj *)
-
-let behavior =
-  field vm_region_submap_info_64 "behavior"
-    vm_behavior_t (* access behavior hint *)
-
-let object_id =
-  field vm_region_submap_info_64 "object_id"
-    vm32_object_id_t (* obj/map name, not a handle *)
-
-let user_wired_count =
-  field vm_region_submap_info_64 "user_wired_count" uint16_t
-
-let pages_reusable = field vm_region_submap_info_64 "pages_reusable" uint32_t
-
-let object_id_full =
-  field vm_region_submap_info_64 "object_id_full" vm_object_id_t
-
-let () = seal vm_region_submap_info_64
+let submap_protection = C.Types.vms_protection
+let submap_max_protection = C.Types.vms_max_protection
+let submap_inheritance = C.Types.vms_inheritance
+let submap_offset = C.Types.vms_offset
+let user_tag = C.Types.vms_user_tag
+let pages_resident = C.Types.vms_pages_resident
+let pages_shared_now_private = C.Types.vms_pages_shared_now_private
+let pages_swapped_out = C.Types.vms_pages_swapped_out
+let pages_dirtied = C.Types.vms_pages_dirtied
+let ref_count = C.Types.vms_ref_count
+let shadow_depth = C.Types.vms_shadow_depth
+let external_pager = C.Types.vms_external_pager
+let share_mode = C.Types.vms_share_mode
+let is_submap = C.Types.vms_is_submap
+let submap_behavior = C.Types.vms_behavior
+let object_id = C.Types.vms_object_id
+let submap_user_wired_count = C.Types.vms_user_wired_count
+let submap_flags = C.Types.vms_flags
+let pages_reusable = C.Types.vms_pages_reusable
+let object_id_full = C.Types.vms_object_id_full
 
 type vm_region_submap_info_data_64_t = vm_region_submap_info_64
 
@@ -385,7 +330,10 @@ let mach_port_deallocate =
     (ipc_space_t @-> mach_port_name_t @-> returning kern_return_t)
 
 (** mach_msg_type_name_t constants for port rights *)
-let mach_msg_type_make_send : int32 = 20l
+let mach_msg_type_make_send : int32 = C.Types.mach_msg_type_make_send
+
+(** MACH_PORT_RIGHT_RECEIVE *)
+let mach_port_right_receive : int32 = C.Types.mach_port_right_receive
 
 let mach_port_insert_right =
   foreign "mach_port_insert_right"
@@ -402,23 +350,17 @@ let mach_port_insert_right =
         mach_port_name_t target_tport,
         int pid,
         mach_port_name_t *t);
-
-   TODO These uint64_t values should be natural_t according to the C headers.
-        Making them ints is convenient for now but should be changed later.
  *)
 let task_for_pid =
   foreign "task_for_pid"
-    (uint64_t @-> pid_t @-> ptr uint64_t @-> returning kern_return_t)
-(* foreign "task_for_pid" (mach_port_name_t @-> pid_t @-> ptr mach_port_name_t @-> returning kern_return_t) *)
+    (mach_port_t @-> pid_t @-> ptr mach_port_t @-> returning kern_return_t)
 
 let task_name_for_pid =
   foreign "task_name_for_pid"
-    (mach_port_name_t @-> pid_t @-> ptr mach_port_name_t
-   @-> returning kern_return_t)
+    (mach_port_t @-> pid_t @-> ptr mach_port_t @-> returning kern_return_t)
 
 let pid_for_task =
-  foreign "pid_for_task" (uint64_t @-> ptr pid_t @-> returning kern_return_t)
-(* foreign "pid_for_task" (mach_port_name_t @-> ptr pid_t @-> returning kern_return_t) *)
+  foreign "pid_for_task" (mach_port_t @-> ptr pid_t @-> returning kern_return_t)
 
 (** Types defined in `mach/task_info.h` *)
 
@@ -453,9 +395,10 @@ type thread_act_t = mach_port_t
 
 let thread_act_t = mach_port_t
 
-type thread_act_array_t = thread_act_t
+type thread_act_array_t = thread_act_t ptr
+(** An array of thread port names, as returned by [task_threads]. *)
 
-let thread_act_array_t = thread_act_t
+let thread_act_array_t = ptr thread_act_t
 
 (** Types defined in `mach/mach_types.h` *)
 
@@ -509,10 +452,12 @@ let x86_float_state_count = 64
 
 (** Thread state flavors for ARM64 from `mach/arm/thread_status.h` *)
 
-let arm_thread_state64 : thread_state_flavor_t = 6l
+let arm_thread_state64 : thread_state_flavor_t =
+  C.Types.arm_thread_state64_flavor
+
 let arm_exception_state64 : thread_state_flavor_t = 7l
 let arm_neon_state64 : thread_state_flavor_t = 17l
-let arm_thread_state64_count = 68
+let arm_thread_state64_count = C.Types.arm_thread_state64_count
 let arm_neon_state64_count = 256
 
 (** x86_64 thread state structure *)
@@ -547,47 +492,20 @@ let () = seal x86_thread_state64_t
 
 (** ARM64 thread state structure *)
 
-type arm_thread_state64_t
+(* arm_thread_state64_t comes from the system header; see
+   type_description.ml. __x is a 29 element array. *)
+type arm_thread_state64_t = C.Types.arm_thread_state64
 
 let arm_thread_state64_t : arm_thread_state64_t structure typ =
-  structure "arm_thread_state64_t"
+  C.Types.arm_thread_state64
 
-let x0 = field arm_thread_state64_t "__x0" uint64_t
-let x1 = field arm_thread_state64_t "__x1" uint64_t
-let x2 = field arm_thread_state64_t "__x2" uint64_t
-let x3 = field arm_thread_state64_t "__x3" uint64_t
-let x4 = field arm_thread_state64_t "__x4" uint64_t
-let x5 = field arm_thread_state64_t "__x5" uint64_t
-let x6 = field arm_thread_state64_t "__x6" uint64_t
-let x7 = field arm_thread_state64_t "__x7" uint64_t
-let x8 = field arm_thread_state64_t "__x8" uint64_t
-let x9 = field arm_thread_state64_t "__x9" uint64_t
-let x10 = field arm_thread_state64_t "__x10" uint64_t
-let x11 = field arm_thread_state64_t "__x11" uint64_t
-let x12 = field arm_thread_state64_t "__x12" uint64_t
-let x13 = field arm_thread_state64_t "__x13" uint64_t
-let x14 = field arm_thread_state64_t "__x14" uint64_t
-let x15 = field arm_thread_state64_t "__x15" uint64_t
-let x16 = field arm_thread_state64_t "__x16" uint64_t
-let x17 = field arm_thread_state64_t "__x17" uint64_t
-let x18 = field arm_thread_state64_t "__x18" uint64_t
-let x19 = field arm_thread_state64_t "__x19" uint64_t
-let x20 = field arm_thread_state64_t "__x20" uint64_t
-let x21 = field arm_thread_state64_t "__x21" uint64_t
-let x22 = field arm_thread_state64_t "__x22" uint64_t
-let x23 = field arm_thread_state64_t "__x23" uint64_t
-let x24 = field arm_thread_state64_t "__x24" uint64_t
-let x25 = field arm_thread_state64_t "__x25" uint64_t
-let x26 = field arm_thread_state64_t "__x26" uint64_t
-let x27 = field arm_thread_state64_t "__x27" uint64_t
-let x28 = field arm_thread_state64_t "__x28" uint64_t
-let fp = field arm_thread_state64_t "__fp" uint64_t
-let lr = field arm_thread_state64_t "__lr" uint64_t
-let sp = field arm_thread_state64_t "__sp" uint64_t
-let pc = field arm_thread_state64_t "__pc" uint64_t
-let cpsr = field arm_thread_state64_t "__cpsr" uint32_t
-let pad = field arm_thread_state64_t "__pad" uint32_t
-let () = seal arm_thread_state64_t
+let x = C.Types.arm_x
+let fp = C.Types.arm_fp
+let lr = C.Types.arm_lr
+let sp = C.Types.arm_sp
+let pc = C.Types.arm_pc
+let cpsr = C.Types.arm_cpsr
+let pad = C.Types.arm_pad
 
 (** Types defined in `mach/exception_types.h` *)
 
@@ -597,11 +515,8 @@ let () = seal arm_thread_state64_t
 
     Code contains kern_return_t describing error. Subcode contains bad memory
     address *)
-(* Exception constants come from the system headers via ctypes stub
-   generation; see type_description.ml. They used to be transcribed here, and
-   every exc_mask_* was one bit too low as a result: a mask is (1 lsl exc) and
-   exception types start at 1, so bit 0 is never valid and
-   task_set_exception_ports rejected the whole call. *)
+(* Exception constants come from the system headers; see type_description.ml.
+   A mask is (1 lsl exc), and exception types start at 1. *)
 
 (** Machine-independent exception types. *)
 
@@ -782,32 +697,28 @@ let thread_identifier_info : thread_flavor_t = 4l
 let thread_basic_info_count = 10
 let thread_identifier_info_count = 6
 
-type thread_basic_info_t
-(** Thread basic info structure *)
+type thread_basic_info_t = C.Types.thread_basic_info
 
 let thread_basic_info_t : thread_basic_info_t structure typ =
-  structure "thread_basic_info"
+  C.Types.thread_basic_info
 
-let user_time = field thread_basic_info_t "user_time" (array 2 int32_t)
-let system_time = field thread_basic_info_t "system_time" (array 2 int32_t)
-let cpu_usage = field thread_basic_info_t "cpu_usage" int32_t
-let policy = field thread_basic_info_t "policy" int32_t
-let run_state = field thread_basic_info_t "run_state" int32_t
-let flags = field thread_basic_info_t "flags" int32_t
-let suspend_count = field thread_basic_info_t "suspend_count" int32_t
-let sleep_time = field thread_basic_info_t "sleep_time" int32_t
-let () = seal thread_basic_info_t
+let user_time = C.Types.tbi_user_time
+let system_time = C.Types.tbi_system_time
+let cpu_usage = C.Types.tbi_cpu_usage
+let policy = C.Types.tbi_policy
+let run_state = C.Types.tbi_run_state
+let flags = C.Types.tbi_flags
+let suspend_count = C.Types.tbi_suspend_count
+let sleep_time = C.Types.tbi_sleep_time
 
-type thread_identifier_info_t
-(** Thread identifier info structure *)
+type thread_identifier_info_t = C.Types.thread_identifier_info
 
 let thread_identifier_info_t : thread_identifier_info_t structure typ =
-  structure "thread_identifier_info"
+  C.Types.thread_identifier_info
 
-let thread_id = field thread_identifier_info_t "thread_id" uint64_t
-let thread_handle = field thread_identifier_info_t "thread_handle" uint64_t
-let dispatch_qaddr = field thread_identifier_info_t "dispatch_qaddr" uint64_t
-let () = seal thread_identifier_info_t
+let thread_id = C.Types.tii_thread_id
+let thread_handle = C.Types.tii_thread_handle
+let dispatch_qaddr = C.Types.tii_dispatch_qaddr
 
 (** Routine thread_suspend *)
 let thread_suspend =
@@ -954,51 +865,24 @@ let pbi_status_to_string = function
 (* type proc_pidinfo_flavors = *)
 (*  | PROC_PIDT_SHORTBSDINFO -> 13 *)
 
-type proc_bsdshortinfo
+type proc_bsdshortinfo = C.Types.proc_bsdshortinfo
 
 let proc_bsdshortinfo : proc_bsdshortinfo structure typ =
-  structure "proc_bsdshortinfo"
+  C.Types.proc_bsdshortinfo
 
-let pbsi_pid = field proc_bsdshortinfo "pbi_pid" uint32_t (* process id  *)
-
-let pbsi_ppid =
-  field proc_bsdshortinfo "pbi_ppid" uint32_t (* process parent id *)
-
-let pbsi_pgid =
-  field proc_bsdshortinfo "pbi_pgid" uint32_t (* process perp id  *)
-
-let pbsi_status =
-  field proc_bsdshortinfo "pbsi_status"
-    uint32_t (*  p_stat value, SZOMB, SRUN, etc *)
-
-let pbsi_comm = field proc_bsdshortinfo "pbsi_comm" (array 16 char)
-
-(* upto 16 characters of process name *)
-let pbsi_flags =
-  field proc_bsdshortinfo "bpsi_flags" uint32_t (* 64bit; emulated etc *)
-
-let pbsi_uid =
-  field proc_bsdshortinfo "bpsi_uid" uid_t (* current uid on process *)
-
-let pbsi_gid =
-  field proc_bsdshortinfo "bpsi_gid" gid_t (* current gid on process *)
-
-let pbsi_ruid =
-  field proc_bsdshortinfo "bpsi_ruid" uid_t (* current ruid on process *)
-
-let pbsi_rgid =
-  field proc_bsdshortinfo "bpsi_rgid" gid_t (* current rgid on process *)
-
-let pbsi_svuid =
-  field proc_bsdshortinfo "bpsi_svuid" uid_t (* current svuid on process *)
-
-let pbsi_svgid =
-  field proc_bsdshortinfo "bpsi_svgid" gid_t (* current svgid on process *)
-
-let pbsi_rfu =
-  field proc_bsdshortinfo "bpsi_rfu" uint32_t (* reserved for future use *)
-
-let () = seal proc_bsdshortinfo
+let pbsi_pid = C.Types.pbsi_pid
+let pbsi_ppid = C.Types.pbsi_ppid
+let pbsi_pgid = C.Types.pbsi_pgid
+let pbsi_status = C.Types.pbsi_status
+let pbsi_comm = C.Types.pbsi_comm
+let pbsi_flags = C.Types.pbsi_flags
+let pbsi_uid = C.Types.pbsi_uid
+let pbsi_gid = C.Types.pbsi_gid
+let pbsi_ruid = C.Types.pbsi_ruid
+let pbsi_rgid = C.Types.pbsi_rgid
+let pbsi_svuid = C.Types.pbsi_svuid
+let pbsi_svgid = C.Types.pbsi_svgid
+let pbsi_rfu = C.Types.pbsi_rfu
 
 (* int proc_pidinfo(int pid, int flavor, uint64_t arg, void *buffer, int buffersize); *)
 let proc_pidinfo =

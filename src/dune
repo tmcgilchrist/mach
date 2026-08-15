@@ -15,7 +15,15 @@
   (external_library_name none)
   (build_flags_resolver vendored)
   (headers
-   (include "mach/mach.h" "mach/thread_status.h" "mach/exception_types.h"))
+   (include
+    "mach/mach.h"
+    "mach/thread_status.h"
+    "mach/exception_types.h"
+    "mach/arm/thread_status.h"
+    "mach/vm_region.h"
+    "mach/thread_info.h"
+    "libproc.h"
+    "sys/proc_info.h"))
   (type_description
    (instance Types)
    (functor Type_description))
