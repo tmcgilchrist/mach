@@ -85,6 +85,11 @@ let vm_task_entry_t = mach_port_t
 
 (** Types and functions corresponding to `mach/port.h` *)
 
+type mach_msg_type_name_t = natural_t
+(** Names a port right being transferred in a message. *)
+
+let mach_msg_type_name_t = natural_t
+
 type mach_port_name_t = natural_t
 (** [mach_port_name_t] - the local identity for a Mach port
 
@@ -215,9 +220,11 @@ let memory_object_offset_t = uint64_t
 
 type vm_region_info_t = natural_t
 type vm_region_info_64_t = natural_t
-type vm_region_recurse_info_t = natural_t
 
-let vm_region_recurse_info_t = natural_t
+type vm_region_recurse_info_t = integer_t ptr
+(** A pointer to a caller-supplied info buffer, not a scalar. *)
+
+let vm_region_recurse_info_t = ptr integer_t
 
 type vm_region_recurse_info_64_t = natural_t
 type vm_behavior_t = integer_t
@@ -285,9 +292,8 @@ let vm_region_submap_info_data_64_t = vm_region_submap_info_64
 let mach_vm_region_recurse =
   foreign "mach_vm_region_recurse"
     (vm_task_entry_t @-> ptr mach_vm_address_t @-> ptr mach_vm_size_t
-   @-> ptr natural_t
-    @-> ptr vm_region_recurse_info_t
-    @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+   @-> ptr natural_t @-> vm_region_recurse_info_t @-> ptr mach_msg_type_number_t
+   @-> returning kern_return_t)
 
 (** Routine mach_vm_read *)
 let mach_vm_read =
@@ -322,7 +328,7 @@ let mach_vm_deallocate =
 (** Routine vm_deallocate for cleanup *)
 let vm_deallocate =
   foreign "vm_deallocate"
-    (vm_map_t @-> vm_offset_t @-> mach_vm_size_t @-> returning kern_return_t)
+    (vm_map_t @-> vm_offset_t @-> vm_size_t @-> returning kern_return_t)
 
 (** Types and functions from `mach/mach_port.h` *)
 
@@ -344,7 +350,8 @@ let mach_port_deallocate =
     (ipc_space_t @-> mach_port_name_t @-> returning kern_return_t)
 
 (** mach_msg_type_name_t constants for port rights *)
-let mach_msg_type_make_send : int32 = C.Types.mach_msg_type_make_send
+let mach_msg_type_make_send : mach_msg_type_name_t =
+  C.Types.mach_msg_type_make_send
 
 (** MACH_PORT_RIGHT_RECEIVE *)
 let mach_port_right_receive : mach_port_right_t =
@@ -352,7 +359,7 @@ let mach_port_right_receive : mach_port_right_t =
 
 let mach_port_insert_right =
   foreign "mach_port_insert_right"
-    (ipc_space_t @-> mach_port_name_t @-> mach_port_t @-> int32_t
+    (ipc_space_t @-> mach_port_name_t @-> mach_port_t @-> mach_msg_type_name_t
    @-> returning kern_return_t)
 
 (* let mach_port_names = *)
@@ -641,7 +648,7 @@ let mach_ports_register =
 (** Routine mach_ports_lookup *)
 let mach_ports_lookup =
   foreign "mach_ports_lookup"
-    (task_t @-> ptr mach_port_array_t @-> mach_msg_type_number_t
+    (task_t @-> ptr mach_port_array_t @-> ptr mach_msg_type_number_t
    @-> returning kern_return_t)
 
 (** Routine task_info *)
@@ -681,7 +688,7 @@ let thread_create =
 (** Routine thread_create_running *)
 let thread_create_running =
   foreign "thread_create_running"
-    (task_t @-> ptr thread_state_flavor_t @-> ptr thread_state_t
+    (task_t @-> thread_state_flavor_t @-> ptr thread_state_t
    @-> mach_msg_type_number_t @-> ptr thread_act_t @-> returning kern_return_t)
 
 (** Routine thread_get_state *)

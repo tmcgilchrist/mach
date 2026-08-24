@@ -118,7 +118,7 @@ module Types (F : Ctypes.TYPE) = struct
 
   (* mach/port.h and mach/message.h *)
   let mach_port_right_receive = constant "MACH_PORT_RIGHT_RECEIVE" uint32_t
-  let mach_msg_type_make_send = constant "MACH_MSG_TYPE_MAKE_SEND" int32_t
+  let mach_msg_type_make_send = constant "MACH_MSG_TYPE_MAKE_SEND" uint32_t
 
   (* mach_thread_state.h. Declared locally because <mach/arm/_structs.h> is
      guarded on __arm64__ and so is invisible to an x86_64 build; that header
