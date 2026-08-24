@@ -62,13 +62,13 @@ module Types (F : Ctypes.TYPE) = struct
   let mach_port_right_receive = constant "MACH_PORT_RIGHT_RECEIVE" int32_t
   let mach_msg_type_make_send = constant "MACH_MSG_TYPE_MAKE_SEND" int32_t
 
-  (* mach/arm/_structs.h. Referred to through the typedef rather than the
-     struct tag: under __DARWIN_UNIX03, the default, the tag is
-     __darwin_arm_thread_state64. *)
+  (* mach_thread_state.h. Declared locally because <mach/arm/_structs.h> is
+     guarded on __arm64__ and so is invisible to an x86_64 build; that header
+     static_asserts this layout against the system one wherever it exists. *)
   type arm_thread_state64
 
   let arm_thread_state64 : arm_thread_state64 Ctypes.structure typ =
-    typedef (structure "__darwin_arm_thread_state64") "arm_thread_state64_t"
+    structure "mach_arm_thread_state64"
 
   let arm_x = field arm_thread_state64 "__x" (array 29 uint64_t)
   let arm_fp = field arm_thread_state64 "__fp" uint64_t
@@ -78,10 +78,42 @@ module Types (F : Ctypes.TYPE) = struct
   let arm_cpsr = field arm_thread_state64 "__cpsr" uint32_t
   let arm_pad = field arm_thread_state64 "__pad" uint32_t
   let () = seal arm_thread_state64
+  let arm_thread_state64_flavor = constant "MACH_ARM_THREAD_STATE64" int32_t
+  let arm_thread_state64_count = constant "MACH_ARM_THREAD_STATE64_COUNT" int
 
-  (* mach/arm/thread_status.h *)
-  let arm_thread_state64_flavor = constant "ARM_THREAD_STATE64" int32_t
-  let arm_thread_state64_count = constant "ARM_THREAD_STATE64_COUNT" int
+  (* mach_thread_state.h. Declared locally because <mach/i386/_structs.h> is
+     guarded on __x86_64__ and so is invisible to an arm64 build; that header
+     static_asserts this layout against the system one wherever it exists, so
+     an arm64 tdb can still read x86_64 targets. *)
+  type x86_thread_state64
+
+  let x86_thread_state64 : x86_thread_state64 Ctypes.structure typ =
+    structure "mach_x86_thread_state64"
+
+  let x86_rax = field x86_thread_state64 "__rax" uint64_t
+  let x86_rbx = field x86_thread_state64 "__rbx" uint64_t
+  let x86_rcx = field x86_thread_state64 "__rcx" uint64_t
+  let x86_rdx = field x86_thread_state64 "__rdx" uint64_t
+  let x86_rdi = field x86_thread_state64 "__rdi" uint64_t
+  let x86_rsi = field x86_thread_state64 "__rsi" uint64_t
+  let x86_rbp = field x86_thread_state64 "__rbp" uint64_t
+  let x86_rsp = field x86_thread_state64 "__rsp" uint64_t
+  let x86_r8 = field x86_thread_state64 "__r8" uint64_t
+  let x86_r9 = field x86_thread_state64 "__r9" uint64_t
+  let x86_r10 = field x86_thread_state64 "__r10" uint64_t
+  let x86_r11 = field x86_thread_state64 "__r11" uint64_t
+  let x86_r12 = field x86_thread_state64 "__r12" uint64_t
+  let x86_r13 = field x86_thread_state64 "__r13" uint64_t
+  let x86_r14 = field x86_thread_state64 "__r14" uint64_t
+  let x86_r15 = field x86_thread_state64 "__r15" uint64_t
+  let x86_rip = field x86_thread_state64 "__rip" uint64_t
+  let x86_rflags = field x86_thread_state64 "__rflags" uint64_t
+  let x86_cs = field x86_thread_state64 "__cs" uint64_t
+  let x86_fs = field x86_thread_state64 "__fs" uint64_t
+  let x86_gs = field x86_thread_state64 "__gs" uint64_t
+  let () = seal x86_thread_state64
+  let x86_thread_state64_flavor = constant "MACH_X86_THREAD_STATE64" int32_t
+  let x86_thread_state64_count = constant "MACH_X86_THREAD_STATE64_COUNT" int
 
   (* mach/thread_info.h. user_time and system_time are time_value_t, a pair of
      integer_t. *)

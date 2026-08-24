@@ -438,7 +438,10 @@ let thread_state_flavor_t = integer_t
 let x86_thread_state32 : thread_state_flavor_t = 1l
 let x86_float_state32 : thread_state_flavor_t = 2l
 let x86_exception_state32 : thread_state_flavor_t = 3l
-let x86_thread_state64 : thread_state_flavor_t = 4l
+
+let x86_thread_state64 : thread_state_flavor_t =
+  C.Types.x86_thread_state64_flavor
+
 let x86_float_state64 : thread_state_flavor_t = 5l
 let x86_exception_state64 : thread_state_flavor_t = 6l
 let x86_thread_state : thread_state_flavor_t = 7l
@@ -447,7 +450,7 @@ let x86_exception_state : thread_state_flavor_t = 9l
 let x86_debug_state32 : thread_state_flavor_t = 10l
 let x86_debug_state64 : thread_state_flavor_t = 11l
 let x86_debug_state : thread_state_flavor_t = 12l
-let x86_thread_state_count = 42
+let x86_thread_state_count = C.Types.x86_thread_state64_count
 let x86_float_state_count = 64
 
 (** Thread state flavors for ARM64 from `mach/arm/thread_status.h` *)
@@ -462,33 +465,32 @@ let arm_neon_state64_count = 256
 
 (** x86_64 thread state structure *)
 
-type x86_thread_state64_t
+type x86_thread_state64_t = C.Types.x86_thread_state64
 
 let x86_thread_state64_t : x86_thread_state64_t structure typ =
-  structure "x86_thread_state64_t"
+  C.Types.x86_thread_state64
 
-let rax = field x86_thread_state64_t "__rax" uint64_t
-let rbx = field x86_thread_state64_t "__rbx" uint64_t
-let rcx = field x86_thread_state64_t "__rcx" uint64_t
-let rdx = field x86_thread_state64_t "__rdx" uint64_t
-let rdi = field x86_thread_state64_t "__rdi" uint64_t
-let rsi = field x86_thread_state64_t "__rsi" uint64_t
-let rbp = field x86_thread_state64_t "__rbp" uint64_t
-let rsp = field x86_thread_state64_t "__rsp" uint64_t
-let r8 = field x86_thread_state64_t "__r8" uint64_t
-let r9 = field x86_thread_state64_t "__r9" uint64_t
-let r10 = field x86_thread_state64_t "__r10" uint64_t
-let r11 = field x86_thread_state64_t "__r11" uint64_t
-let r12 = field x86_thread_state64_t "__r12" uint64_t
-let r13 = field x86_thread_state64_t "__r13" uint64_t
-let r14 = field x86_thread_state64_t "__r14" uint64_t
-let r15 = field x86_thread_state64_t "__r15" uint64_t
-let rip = field x86_thread_state64_t "__rip" uint64_t
-let rflags = field x86_thread_state64_t "__rflags" uint64_t
-let cs = field x86_thread_state64_t "__cs" uint64_t
-let fs = field x86_thread_state64_t "__fs" uint64_t
-let gs = field x86_thread_state64_t "__gs" uint64_t
-let () = seal x86_thread_state64_t
+let rax = C.Types.x86_rax
+let rbx = C.Types.x86_rbx
+let rcx = C.Types.x86_rcx
+let rdx = C.Types.x86_rdx
+let rdi = C.Types.x86_rdi
+let rsi = C.Types.x86_rsi
+let rbp = C.Types.x86_rbp
+let rsp = C.Types.x86_rsp
+let r8 = C.Types.x86_r8
+let r9 = C.Types.x86_r9
+let r10 = C.Types.x86_r10
+let r11 = C.Types.x86_r11
+let r12 = C.Types.x86_r12
+let r13 = C.Types.x86_r13
+let r14 = C.Types.x86_r14
+let r15 = C.Types.x86_r15
+let rip = C.Types.x86_rip
+let rflags = C.Types.x86_rflags
+let cs = C.Types.x86_cs
+let fs = C.Types.x86_fs
+let gs = C.Types.x86_gs
 
 (** ARM64 thread state structure *)
 
