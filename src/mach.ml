@@ -105,59 +105,70 @@ let mach_port_name_t = natural_t
 type kern_return_t = natural_t
 
 let kern_return_t = natural_t
-let kern_success : kern_return_t = 0l
-let kern_invalid_address : kern_return_t = 1l
-let kern_protection_failure : kern_return_t = 2l
-let kern_no_space : kern_return_t = 3l
-let kern_invalid_argument : kern_return_t = 4l
-let kern_failure : kern_return_t = 5l
-let kern_resource_shortage : kern_return_t = 6l
-let kern_not_receiver : kern_return_t = 7l
-let kern_no_access : kern_return_t = 8l
-let kern_memory_failure : kern_return_t = 9l
-let kern_memory_error : kern_return_t = 10l
-let kern_already_in_set : kern_return_t = 11l
-let kern_not_in_set : kern_return_t = 12l
-let kern_name_exists : kern_return_t = 13l
-let kern_aborted : kern_return_t = 14l
-let kern_invalid_name : kern_return_t = 15l
-let kern_invalid_task : kern_return_t = 16l
-let kern_invalid_right : kern_return_t = 17l
-let kern_invalid_value : kern_return_t = 18l
-let kern_urefs_overflow : kern_return_t = 19l
-let kern_invalid_capability : kern_return_t = 20l
-let kern_right_exists : kern_return_t = 21l
-let kern_invalid_host : kern_return_t = 22l
-let kern_memory_present : kern_return_t = 23l
-let kern_memory_data_moved : kern_return_t = 24l
-let kern_memory_restart_copy : kern_return_t = 25l
-let kern_invalid_processor_set : kern_return_t = 26l
-let kern_policy_limit : kern_return_t = 27l
-let kern_invalid_policy : kern_return_t = 28l
-let kern_invalid_object : kern_return_t = 29l
-let kern_already_waiting : kern_return_t = 30l
-let kern_default_set : kern_return_t = 31l
-let kern_exception_protected : kern_return_t = 32l
-let kern_invalid_ledger : kern_return_t = 33l
-let kern_invalid_memory_control : kern_return_t = 34l
-let kern_invalid_security : kern_return_t = 35l
-let kern_not_depressed : kern_return_t = 36l
-let kern_terminated : kern_return_t = 37l
-let kern_lock_set_destroyed : kern_return_t = 38l
-let kern_lock_unstable : kern_return_t = 39l
-let kern_lock_owned : kern_return_t = 40l
-let kern_lock_owned_self : kern_return_t = 41l
-let kern_semaphore_destroyed : kern_return_t = 42l
-let kern_rpc_server_terminated : kern_return_t = 43l
-let kern_rpc_terminate_orphan : kern_return_t = 44l
-let kern_rpc_continue_orphan : kern_return_t = 45l
-let kern_not_supported : kern_return_t = 46l
-let kern_node_down : kern_return_t = 47l
-let kern_not_waiting : kern_return_t = 48l
-let kern_operation_timed_out : kern_return_t = 49l
-let kern_codesign_error : kern_return_t = 50l
-let kern_policy_static : kern_return_t = 51l
-let kern_return_max : kern_return_t = 0x100l
+let kern_success : kern_return_t = C.Types.kern_success
+let kern_invalid_address : kern_return_t = C.Types.kern_invalid_address
+let kern_protection_failure : kern_return_t = C.Types.kern_protection_failure
+let kern_no_space : kern_return_t = C.Types.kern_no_space
+let kern_invalid_argument : kern_return_t = C.Types.kern_invalid_argument
+let kern_failure : kern_return_t = C.Types.kern_failure
+let kern_resource_shortage : kern_return_t = C.Types.kern_resource_shortage
+let kern_not_receiver : kern_return_t = C.Types.kern_not_receiver
+let kern_no_access : kern_return_t = C.Types.kern_no_access
+let kern_memory_failure : kern_return_t = C.Types.kern_memory_failure
+let kern_memory_error : kern_return_t = C.Types.kern_memory_error
+let kern_already_in_set : kern_return_t = C.Types.kern_already_in_set
+let kern_not_in_set : kern_return_t = C.Types.kern_not_in_set
+let kern_name_exists : kern_return_t = C.Types.kern_name_exists
+let kern_aborted : kern_return_t = C.Types.kern_aborted
+let kern_invalid_name : kern_return_t = C.Types.kern_invalid_name
+let kern_invalid_task : kern_return_t = C.Types.kern_invalid_task
+let kern_invalid_right : kern_return_t = C.Types.kern_invalid_right
+let kern_invalid_value : kern_return_t = C.Types.kern_invalid_value
+let kern_urefs_overflow : kern_return_t = C.Types.kern_urefs_overflow
+let kern_invalid_capability : kern_return_t = C.Types.kern_invalid_capability
+let kern_right_exists : kern_return_t = C.Types.kern_right_exists
+let kern_invalid_host : kern_return_t = C.Types.kern_invalid_host
+let kern_memory_present : kern_return_t = C.Types.kern_memory_present
+let kern_memory_data_moved : kern_return_t = C.Types.kern_memory_data_moved
+let kern_memory_restart_copy : kern_return_t = C.Types.kern_memory_restart_copy
+
+let kern_invalid_processor_set : kern_return_t =
+  C.Types.kern_invalid_processor_set
+
+let kern_policy_limit : kern_return_t = C.Types.kern_policy_limit
+let kern_invalid_policy : kern_return_t = C.Types.kern_invalid_policy
+let kern_invalid_object : kern_return_t = C.Types.kern_invalid_object
+let kern_already_waiting : kern_return_t = C.Types.kern_already_waiting
+let kern_default_set : kern_return_t = C.Types.kern_default_set
+let kern_exception_protected : kern_return_t = C.Types.kern_exception_protected
+let kern_invalid_ledger : kern_return_t = C.Types.kern_invalid_ledger
+
+let kern_invalid_memory_control : kern_return_t =
+  C.Types.kern_invalid_memory_control
+
+let kern_invalid_security : kern_return_t = C.Types.kern_invalid_security
+let kern_not_depressed : kern_return_t = C.Types.kern_not_depressed
+let kern_terminated : kern_return_t = C.Types.kern_terminated
+let kern_lock_set_destroyed : kern_return_t = C.Types.kern_lock_set_destroyed
+let kern_lock_unstable : kern_return_t = C.Types.kern_lock_unstable
+let kern_lock_owned : kern_return_t = C.Types.kern_lock_owned
+let kern_lock_owned_self : kern_return_t = C.Types.kern_lock_owned_self
+let kern_semaphore_destroyed : kern_return_t = C.Types.kern_semaphore_destroyed
+
+let kern_rpc_server_terminated : kern_return_t =
+  C.Types.kern_rpc_server_terminated
+
+let kern_rpc_terminate_orphan : kern_return_t =
+  C.Types.kern_rpc_terminate_orphan
+
+let kern_rpc_continue_orphan : kern_return_t = C.Types.kern_rpc_continue_orphan
+let kern_not_supported : kern_return_t = C.Types.kern_not_supported
+let kern_node_down : kern_return_t = C.Types.kern_node_down
+let kern_not_waiting : kern_return_t = C.Types.kern_not_waiting
+let kern_operation_timed_out : kern_return_t = C.Types.kern_operation_timed_out
+let kern_codesign_error : kern_return_t = C.Types.kern_codesign_error
+let kern_policy_static : kern_return_t = C.Types.kern_policy_static
+let kern_return_max : kern_return_t = C.Types.kern_return_max
 
 (** Types corresponds to `mach/i386/boolean.h` *)
 

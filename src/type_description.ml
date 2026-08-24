@@ -4,6 +4,64 @@
 module Types (F : Ctypes.TYPE) = struct
   open F
 
+  (* mach/kern_return.h *)
+  let kern_success = constant "KERN_SUCCESS" int32_t
+  let kern_invalid_address = constant "KERN_INVALID_ADDRESS" int32_t
+  let kern_protection_failure = constant "KERN_PROTECTION_FAILURE" int32_t
+  let kern_no_space = constant "KERN_NO_SPACE" int32_t
+  let kern_invalid_argument = constant "KERN_INVALID_ARGUMENT" int32_t
+  let kern_failure = constant "KERN_FAILURE" int32_t
+  let kern_resource_shortage = constant "KERN_RESOURCE_SHORTAGE" int32_t
+  let kern_not_receiver = constant "KERN_NOT_RECEIVER" int32_t
+  let kern_no_access = constant "KERN_NO_ACCESS" int32_t
+  let kern_memory_failure = constant "KERN_MEMORY_FAILURE" int32_t
+  let kern_memory_error = constant "KERN_MEMORY_ERROR" int32_t
+  let kern_already_in_set = constant "KERN_ALREADY_IN_SET" int32_t
+  let kern_not_in_set = constant "KERN_NOT_IN_SET" int32_t
+  let kern_name_exists = constant "KERN_NAME_EXISTS" int32_t
+  let kern_aborted = constant "KERN_ABORTED" int32_t
+  let kern_invalid_name = constant "KERN_INVALID_NAME" int32_t
+  let kern_invalid_task = constant "KERN_INVALID_TASK" int32_t
+  let kern_invalid_right = constant "KERN_INVALID_RIGHT" int32_t
+  let kern_invalid_value = constant "KERN_INVALID_VALUE" int32_t
+  let kern_urefs_overflow = constant "KERN_UREFS_OVERFLOW" int32_t
+  let kern_invalid_capability = constant "KERN_INVALID_CAPABILITY" int32_t
+  let kern_right_exists = constant "KERN_RIGHT_EXISTS" int32_t
+  let kern_invalid_host = constant "KERN_INVALID_HOST" int32_t
+  let kern_memory_present = constant "KERN_MEMORY_PRESENT" int32_t
+  let kern_memory_data_moved = constant "KERN_MEMORY_DATA_MOVED" int32_t
+  let kern_memory_restart_copy = constant "KERN_MEMORY_RESTART_COPY" int32_t
+  let kern_invalid_processor_set = constant "KERN_INVALID_PROCESSOR_SET" int32_t
+  let kern_policy_limit = constant "KERN_POLICY_LIMIT" int32_t
+  let kern_invalid_policy = constant "KERN_INVALID_POLICY" int32_t
+  let kern_invalid_object = constant "KERN_INVALID_OBJECT" int32_t
+  let kern_already_waiting = constant "KERN_ALREADY_WAITING" int32_t
+  let kern_default_set = constant "KERN_DEFAULT_SET" int32_t
+  let kern_exception_protected = constant "KERN_EXCEPTION_PROTECTED" int32_t
+  let kern_invalid_ledger = constant "KERN_INVALID_LEDGER" int32_t
+
+  let kern_invalid_memory_control =
+    constant "KERN_INVALID_MEMORY_CONTROL" int32_t
+
+  let kern_invalid_security = constant "KERN_INVALID_SECURITY" int32_t
+  let kern_not_depressed = constant "KERN_NOT_DEPRESSED" int32_t
+  let kern_terminated = constant "KERN_TERMINATED" int32_t
+  let kern_lock_set_destroyed = constant "KERN_LOCK_SET_DESTROYED" int32_t
+  let kern_lock_unstable = constant "KERN_LOCK_UNSTABLE" int32_t
+  let kern_lock_owned = constant "KERN_LOCK_OWNED" int32_t
+  let kern_lock_owned_self = constant "KERN_LOCK_OWNED_SELF" int32_t
+  let kern_semaphore_destroyed = constant "KERN_SEMAPHORE_DESTROYED" int32_t
+  let kern_rpc_server_terminated = constant "KERN_RPC_SERVER_TERMINATED" int32_t
+  let kern_rpc_terminate_orphan = constant "KERN_RPC_TERMINATE_ORPHAN" int32_t
+  let kern_rpc_continue_orphan = constant "KERN_RPC_CONTINUE_ORPHAN" int32_t
+  let kern_not_supported = constant "KERN_NOT_SUPPORTED" int32_t
+  let kern_node_down = constant "KERN_NODE_DOWN" int32_t
+  let kern_not_waiting = constant "KERN_NOT_WAITING" int32_t
+  let kern_operation_timed_out = constant "KERN_OPERATION_TIMED_OUT" int32_t
+  let kern_codesign_error = constant "KERN_CODESIGN_ERROR" int32_t
+  let kern_policy_static = constant "KERN_POLICY_STATIC" int32_t
+  let kern_return_max = constant "KERN_RETURN_MAX" int32_t
+
   (* mach/exception_types.h - exception types *)
   let exc_bad_access = constant "EXC_BAD_ACCESS" int32_t
   let exc_bad_instruction = constant "EXC_BAD_INSTRUCTION" int32_t
