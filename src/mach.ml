@@ -537,6 +537,10 @@ let pad = C.Types.arm_pad
 
 (** Machine-independent exception types. *)
 
+type exception_mask_t = natural_t
+(** Unsigned, unlike most of the exception scalars. *)
+
+let exception_mask_t = natural_t
 let exc_bad_access : integer_t = C.Types.exc_bad_access
 let exc_bad_instruction : integer_t = C.Types.exc_bad_instruction
 let exc_arithmetic : integer_t = C.Types.exc_arithmetic
@@ -556,23 +560,26 @@ let exc_soft_signal : integer_t = C.Types.exc_soft_signal
 
 (** Exception masks for use with task_set_exception_ports *)
 
-let exc_mask_bad_access : integer_t = C.Types.exc_mask_bad_access
-let exc_mask_bad_instruction : integer_t = C.Types.exc_mask_bad_instruction
-let exc_mask_arithmetic : integer_t = C.Types.exc_mask_arithmetic
-let exc_mask_emulation : integer_t = C.Types.exc_mask_emulation
-let exc_mask_software : integer_t = C.Types.exc_mask_software
-let exc_mask_breakpoint : integer_t = C.Types.exc_mask_breakpoint
-let exc_mask_syscall : integer_t = C.Types.exc_mask_syscall
-let exc_mask_mach_syscall : integer_t = C.Types.exc_mask_mach_syscall
-let exc_mask_rpc_alert : integer_t = C.Types.exc_mask_rpc_alert
-let exc_mask_crash : integer_t = C.Types.exc_mask_crash
-let exc_mask_resource : integer_t = C.Types.exc_mask_resource
-let exc_mask_guard : integer_t = C.Types.exc_mask_guard
-let exc_mask_corpse_notify : integer_t = C.Types.exc_mask_corpse_notify
+let exc_mask_bad_access : exception_mask_t = C.Types.exc_mask_bad_access
+
+let exc_mask_bad_instruction : exception_mask_t =
+  C.Types.exc_mask_bad_instruction
+
+let exc_mask_arithmetic : exception_mask_t = C.Types.exc_mask_arithmetic
+let exc_mask_emulation : exception_mask_t = C.Types.exc_mask_emulation
+let exc_mask_software : exception_mask_t = C.Types.exc_mask_software
+let exc_mask_breakpoint : exception_mask_t = C.Types.exc_mask_breakpoint
+let exc_mask_syscall : exception_mask_t = C.Types.exc_mask_syscall
+let exc_mask_mach_syscall : exception_mask_t = C.Types.exc_mask_mach_syscall
+let exc_mask_rpc_alert : exception_mask_t = C.Types.exc_mask_rpc_alert
+let exc_mask_crash : exception_mask_t = C.Types.exc_mask_crash
+let exc_mask_resource : exception_mask_t = C.Types.exc_mask_resource
+let exc_mask_guard : exception_mask_t = C.Types.exc_mask_guard
+let exc_mask_corpse_notify : exception_mask_t = C.Types.exc_mask_corpse_notify
 
 (** EXC_MASK_ALL. Excludes EXC_MASK_CRASH and EXC_MASK_CORPSE_NOTIFY, which
     belong to the crash reporter rather than to a debugger. *)
-let exc_mask_all : integer_t = C.Types.exc_mask_all
+let exc_mask_all : exception_mask_t = C.Types.exc_mask_all
 
 (** Machine-independent exception behaviors *)
 
@@ -603,10 +610,6 @@ type mach_exception_data_type_t = int64
 type exception_behavior_t = c_int
 
 let exception_behavior_t = c_int
-
-type exception_mask_t = integer_t
-
-let exception_mask_t = integer_t
 let exception_mask_array_t = ptr exception_mask_t
 let exception_behavior_array_t = ptr exception_behavior_t
 

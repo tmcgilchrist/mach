@@ -136,4 +136,38 @@ _Static_assert(MACH_ARM_THREAD_STATE64_COUNT == ARM_THREAD_STATE64_COUNT,
 
 #endif /* defined(__arm__) || defined(__arm64__) */
 
+
+/*
+ * The width and signedness each Mach scalar is bound to in mach.ml. ctypes
+ * cannot derive a primitive's representation from the header the way it
+ * derives struct offsets, so pin them here instead.
+ */
+
+#include <mach/mach.h>
+#include <mach/vm_region.h>
+
+#define MACH_ASSERT_TYPE(t, sz, is_unsigned)                                  \
+	_Static_assert(sizeof(t) == (sz), "sizeof(" #t ") is not " #sz);      \
+	_Static_assert((((t)-1 > 0) ? 1 : 0) == (is_unsigned),                \
+	    #t " signedness disagrees with the OCaml binding")
+
+MACH_ASSERT_TYPE(natural_t, 4, 1);
+MACH_ASSERT_TYPE(integer_t, 4, 0);
+/* boolean_t is int on arm64 and unsigned int on x86_64, so only its width is
+   portable. It only ever carries 0 or 1, so the signedness does not matter. */
+_Static_assert(sizeof(boolean_t) == 4, "sizeof(boolean_t) is not 4");
+MACH_ASSERT_TYPE(kern_return_t, 4, 0);
+MACH_ASSERT_TYPE(mach_port_t, 4, 1);
+MACH_ASSERT_TYPE(mach_port_name_t, 4, 1);
+MACH_ASSERT_TYPE(mach_msg_type_number_t, 4, 1);
+MACH_ASSERT_TYPE(memory_object_offset_t, 8, 1);
+MACH_ASSERT_TYPE(vm_size_t, 8, 1);
+MACH_ASSERT_TYPE(vm_behavior_t, 4, 0);
+MACH_ASSERT_TYPE(vm_inherit_t, 4, 1);
+MACH_ASSERT_TYPE(vm_prot_t, 4, 0);
+MACH_ASSERT_TYPE(vm32_object_id_t, 4, 1);
+MACH_ASSERT_TYPE(vm_object_id_t, 8, 1);
+MACH_ASSERT_TYPE(exception_behavior_t, 4, 0);
+MACH_ASSERT_TYPE(exception_mask_t, 4, 1);
+
 #endif /* MACH_THREAD_STATE_H */

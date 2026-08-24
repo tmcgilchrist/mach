@@ -78,23 +78,23 @@ module Types (F : Ctypes.TYPE) = struct
   let exc_corpse_notify = constant "EXC_CORPSE_NOTIFY" int32_t
 
   (* mach/exception_types.h - masks, which are (1 lsl exception_type) *)
-  let exc_mask_bad_access = constant "EXC_MASK_BAD_ACCESS" int32_t
-  let exc_mask_bad_instruction = constant "EXC_MASK_BAD_INSTRUCTION" int32_t
-  let exc_mask_arithmetic = constant "EXC_MASK_ARITHMETIC" int32_t
-  let exc_mask_emulation = constant "EXC_MASK_EMULATION" int32_t
-  let exc_mask_software = constant "EXC_MASK_SOFTWARE" int32_t
-  let exc_mask_breakpoint = constant "EXC_MASK_BREAKPOINT" int32_t
-  let exc_mask_syscall = constant "EXC_MASK_SYSCALL" int32_t
-  let exc_mask_mach_syscall = constant "EXC_MASK_MACH_SYSCALL" int32_t
-  let exc_mask_rpc_alert = constant "EXC_MASK_RPC_ALERT" int32_t
-  let exc_mask_crash = constant "EXC_MASK_CRASH" int32_t
-  let exc_mask_resource = constant "EXC_MASK_RESOURCE" int32_t
-  let exc_mask_guard = constant "EXC_MASK_GUARD" int32_t
-  let exc_mask_corpse_notify = constant "EXC_MASK_CORPSE_NOTIFY" int32_t
+  let exc_mask_bad_access = constant "EXC_MASK_BAD_ACCESS" uint32_t
+  let exc_mask_bad_instruction = constant "EXC_MASK_BAD_INSTRUCTION" uint32_t
+  let exc_mask_arithmetic = constant "EXC_MASK_ARITHMETIC" uint32_t
+  let exc_mask_emulation = constant "EXC_MASK_EMULATION" uint32_t
+  let exc_mask_software = constant "EXC_MASK_SOFTWARE" uint32_t
+  let exc_mask_breakpoint = constant "EXC_MASK_BREAKPOINT" uint32_t
+  let exc_mask_syscall = constant "EXC_MASK_SYSCALL" uint32_t
+  let exc_mask_mach_syscall = constant "EXC_MASK_MACH_SYSCALL" uint32_t
+  let exc_mask_rpc_alert = constant "EXC_MASK_RPC_ALERT" uint32_t
+  let exc_mask_crash = constant "EXC_MASK_CRASH" uint32_t
+  let exc_mask_resource = constant "EXC_MASK_RESOURCE" uint32_t
+  let exc_mask_guard = constant "EXC_MASK_GUARD" uint32_t
+  let exc_mask_corpse_notify = constant "EXC_MASK_CORPSE_NOTIFY" uint32_t
 
   (* Excludes EXC_MASK_CRASH and EXC_MASK_CORPSE_NOTIFY, which belong to the
      crash reporter. *)
-  let exc_mask_all = constant "EXC_MASK_ALL" int32_t
+  let exc_mask_all = constant "EXC_MASK_ALL" uint32_t
 
   (* EXC_SOFTWARE code marking a Unix signal *)
   let exc_soft_signal = constant "EXC_SOFT_SIGNAL" int32_t
