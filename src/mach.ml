@@ -4,11 +4,11 @@ open Foreign
 
 (** Types defined in `mach/i386/vm_types.h` *)
 
-type natural_t = int32
-(** [natural_t] and [integer_t] are Mach's legacy types for machine- independent
-    integer types (unsigned, and signed, respectively). *)
+type natural_t = Unsigned.uint32
+(** [natural_t] and [integer_t] are Mach's legacy types for machine-independent
+    integer types, unsigned and signed respectively. *)
 
-let natural_t = Ctypes_static.Primitive Ctypes_primitive_types.Int32_t
+let natural_t = uint32_t
 
 type integer_t = int32
 
@@ -102,9 +102,10 @@ let mach_port_name_t = natural_t
 (* This type corresponds to `mach/arm/kern_return.h` or
    `mach/i386/kern_return.h` as it is the same for
    both architectures *)
-type kern_return_t = natural_t
+type kern_return_t = integer_t
+(** A signed C [int], despite the Mach naming. *)
 
-let kern_return_t = natural_t
+let kern_return_t = integer_t
 let kern_success : kern_return_t = C.Types.kern_success
 let kern_invalid_address : kern_return_t = C.Types.kern_invalid_address
 let kern_protection_failure : kern_return_t = C.Types.kern_protection_failure
@@ -172,9 +173,10 @@ let kern_return_max : kern_return_t = C.Types.kern_return_max
 
 (** Types corresponds to `mach/i386/boolean.h` *)
 
-type boolean_t = Unsigned.uint32
+type boolean_t = int32
+(** A C [int]. *)
 
-let boolean_t = Ctypes_static.Primitive Ctypes_primitive_types.Uint32_t
+let boolean_t = int32_t
 
 type mach_msg_type_number_t = natural_t
 (** Types corresponds to `mach/message.h` *)
@@ -202,13 +204,14 @@ let vm_prot_default = Int32.logor vm_prot_read vm_prot_write
 
 (** Types corresponding to `mach/vm_region.h` *)
 
-type vm_inherit_t = integer_t
+type vm_inherit_t = natural_t
 
-let vm_inherit_t = integer_t
+let vm_inherit_t = natural_t
 
-type memory_object_offset_t = natural_t
+type memory_object_offset_t = uint64_t
+(** A 64-bit offset into a memory object. *)
 
-let memory_object_offset_t = natural_t
+let memory_object_offset_t = uint64_t
 
 type vm_region_info_t = natural_t
 type vm_region_info_64_t = natural_t
@@ -217,9 +220,9 @@ type vm_region_recurse_info_t = natural_t
 let vm_region_recurse_info_t = natural_t
 
 type vm_region_recurse_info_64_t = natural_t
-type vm_behavior_t = natural_t
+type vm_behavior_t = integer_t
 
-let vm_behavior_t = natural_t
+let vm_behavior_t = integer_t
 
 type vm32_object_id_t = Unsigned.uint32
 
@@ -344,7 +347,8 @@ let mach_port_deallocate =
 let mach_msg_type_make_send : int32 = C.Types.mach_msg_type_make_send
 
 (** MACH_PORT_RIGHT_RECEIVE *)
-let mach_port_right_receive : int32 = C.Types.mach_port_right_receive
+let mach_port_right_receive : mach_port_right_t =
+  C.Types.mach_port_right_receive
 
 let mach_port_insert_right =
   foreign "mach_port_insert_right"
@@ -583,9 +587,9 @@ let mach_exception_codes : integer_t = C.Types.mach_exception_codes
     behavior is EXCEPTION_DEFAULT, i.e. when no thread state is wanted. *)
 let thread_state_none : thread_state_flavor_t = C.Types.thread_state_none
 
-type c_int = Unsigned.uint32
+type c_int = int32
 
-let c_int = Ctypes_static.Primitive Ctypes_primitive_types.Uint32_t
+let c_int = int32_t
 
 type exception_type_t = c_int
 
@@ -704,11 +708,13 @@ let thread_info =
    @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
 
 (** Thread info flavors from mach/thread_info.h *)
-let thread_basic_info : thread_flavor_t = 3l
+let thread_basic_info : thread_flavor_t = C.Types.thread_basic_info_flavor
 
-let thread_identifier_info : thread_flavor_t = 4l
-let thread_basic_info_count = 10
-let thread_identifier_info_count = 6
+let thread_identifier_info : thread_flavor_t =
+  C.Types.thread_identifier_info_flavor
+
+let thread_basic_info_count = C.Types.thread_basic_info_count
+let thread_identifier_info_count = C.Types.thread_identifier_info_count
 
 type thread_basic_info_t = C.Types.thread_basic_info
 

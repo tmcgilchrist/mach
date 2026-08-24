@@ -117,7 +117,7 @@ module Types (F : Ctypes.TYPE) = struct
   let vm_prot_execute = constant "VM_PROT_EXECUTE" int32_t
 
   (* mach/port.h and mach/message.h *)
-  let mach_port_right_receive = constant "MACH_PORT_RIGHT_RECEIVE" int32_t
+  let mach_port_right_receive = constant "MACH_PORT_RIGHT_RECEIVE" uint32_t
   let mach_msg_type_make_send = constant "MACH_MSG_TYPE_MAKE_SEND" int32_t
 
   (* mach_thread_state.h. Declared locally because <mach/arm/_structs.h> is
@@ -202,9 +202,9 @@ module Types (F : Ctypes.TYPE) = struct
     field thread_identifier_info "dispatch_qaddr" uint64_t
 
   let () = seal thread_identifier_info
-  let thread_basic_info_flavor = constant "THREAD_BASIC_INFO" int32_t
+  let thread_basic_info_flavor = constant "THREAD_BASIC_INFO" uint32_t
   let thread_basic_info_count = constant "THREAD_BASIC_INFO_COUNT" int
-  let thread_identifier_info_flavor = constant "THREAD_IDENTIFIER_INFO" int32_t
+  let thread_identifier_info_flavor = constant "THREAD_IDENTIFIER_INFO" uint32_t
   let thread_identifier_info_count = constant "THREAD_IDENTIFIER_INFO_COUNT" int
 
   (* mach/vm_region.h. offset is a memory_object_offset_t, which is 64 bits. *)
