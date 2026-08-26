@@ -4,6 +4,57 @@
 module Types (F : Ctypes.TYPE) = struct
   open F
 
+  (* Scalar and pointer typedefs, so the function descriptions can name the
+     same C types the headers do. *)
+  let natural_t = typedef uint32_t "natural_t"
+  let integer_t = typedef int32_t "integer_t"
+  let kern_return_t = typedef integer_t "kern_return_t"
+  let boolean_t = typedef int32_t "boolean_t"
+  let c_int = typedef int32_t "int"
+  let mach_port_t = typedef natural_t "mach_port_t"
+  let task_t = typedef mach_port_t "task_t"
+  let task_name_t = typedef mach_port_t "task_name_t"
+  let vm_map_t = typedef mach_port_t "vm_map_t"
+  let vm_task_entry_t = typedef mach_port_t "vm_task_entry_t"
+  let thread_act_t = typedef mach_port_t "thread_act_t"
+  let ipc_space_t = typedef mach_port_t "ipc_space_t"
+  let mach_port_name_t = typedef natural_t "mach_port_name_t"
+  let mach_port_right_t = typedef natural_t "mach_port_right_t"
+  let mach_msg_type_name_t = typedef natural_t "mach_msg_type_name_t"
+  let mach_msg_type_number_t = typedef natural_t "mach_msg_type_number_t"
+  let mach_vm_address_t = typedef uint64_t "mach_vm_address_t"
+  let mach_vm_size_t = typedef uint64_t "mach_vm_size_t"
+  let vm_offset_t = typedef uint64_t "vm_offset_t"
+  let vm_size_t = typedef uint64_t "vm_size_t"
+  let vm_prot_t = typedef integer_t "vm_prot_t"
+  let task_flavor_t = typedef natural_t "task_flavor_t"
+  let thread_flavor_t = typedef natural_t "thread_flavor_t"
+  let thread_state_flavor_t = typedef integer_t "thread_state_flavor_t"
+  let task_special_port_t = typedef integer_t "task_special_port_t"
+  let mach_error_t = typedef natural_t "mach_error_t"
+  let exception_mask_t = typedef natural_t "exception_mask_t"
+  let exception_behavior_t = typedef c_int "exception_behavior_t"
+  let thread_state_t = typedef (ptr natural_t) "thread_state_t"
+  let task_info_t = typedef (ptr integer_t) "task_info_t"
+  let thread_info_t = typedef (ptr integer_t) "thread_info_t"
+  let thread_act_array_t = typedef (ptr thread_act_t) "thread_act_array_t"
+  let mach_port_array_t = typedef (ptr mach_port_t) "mach_port_array_t"
+
+  let vm_region_recurse_info_t =
+    typedef (ptr integer_t) "vm_region_recurse_info_t"
+
+  let exception_mask_array_t =
+    typedef (ptr exception_mask_t) "exception_mask_array_t"
+
+  let exception_behavior_array_t =
+    typedef (ptr exception_behavior_t) "exception_behavior_array_t"
+
+  let exception_flavor_array_t =
+    typedef (ptr thread_state_flavor_t) "exception_flavor_array_t"
+
+  let exception_handler_array_t =
+    typedef (ptr mach_port_t) "exception_handler_array_t"
+
   (* mach/kern_return.h *)
   let kern_success = constant "KERN_SUCCESS" int32_t
   let kern_invalid_address = constant "KERN_INVALID_ADDRESS" int32_t

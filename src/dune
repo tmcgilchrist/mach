@@ -21,6 +21,7 @@
   (headers
    (include
     "mach/mach.h"
+    "mach/mach_vm.h"
     "mach/thread_status.h"
     "mach/exception_types.h"
     "mach/vm_region.h"
@@ -31,5 +32,8 @@
   (type_description
    (instance Types)
    (functor Type_description))
+  (function_description
+   (instance Functions)
+   (functor Function_description))
   (generated_entry_point C))
  (libraries ctypes-foreign))

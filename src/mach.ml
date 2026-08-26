@@ -1,6 +1,5 @@
 open Ctypes
 open PosixTypes
-open Foreign
 
 (** Types defined in `mach/i386/vm_types.h` *)
 
@@ -289,46 +288,25 @@ let vm_region_submap_info_data_64_t = vm_region_submap_info_64
 
 (** Types and functions from `mach/mach_vm.h` *)
 
-let mach_vm_region_recurse =
-  foreign "mach_vm_region_recurse"
-    (vm_task_entry_t @-> ptr mach_vm_address_t @-> ptr mach_vm_size_t
-   @-> ptr natural_t @-> vm_region_recurse_info_t @-> ptr mach_msg_type_number_t
-   @-> returning kern_return_t)
+let mach_vm_region_recurse = C.Functions.mach_vm_region_recurse
 
 (** Routine mach_vm_read *)
-let mach_vm_read =
-  foreign "mach_vm_read"
-    (vm_map_t @-> mach_vm_address_t @-> mach_vm_size_t @-> ptr vm_offset_t
-   @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+let mach_vm_read = C.Functions.mach_vm_read
 
 (** Routine mach_vm_write *)
-let mach_vm_write =
-  foreign "mach_vm_write"
-    (vm_map_t @-> mach_vm_address_t @-> vm_offset_t @-> mach_msg_type_number_t
-   @-> returning kern_return_t)
+let mach_vm_write = C.Functions.mach_vm_write
 
 (** Routine mach_vm_protect *)
-let mach_vm_protect =
-  foreign "mach_vm_protect"
-    (vm_map_t @-> mach_vm_address_t @-> mach_vm_size_t @-> boolean_t
-   @-> vm_prot_t @-> returning kern_return_t)
+let mach_vm_protect = C.Functions.mach_vm_protect
 
 (** Routine mach_vm_allocate *)
-let mach_vm_allocate =
-  foreign "mach_vm_allocate"
-    (vm_map_t @-> ptr mach_vm_address_t @-> mach_vm_size_t @-> int
-   @-> returning kern_return_t)
+let mach_vm_allocate = C.Functions.mach_vm_allocate
 
 (** Routine mach_vm_deallocate *)
-let mach_vm_deallocate =
-  foreign "mach_vm_deallocate"
-    (vm_map_t @-> mach_vm_address_t @-> mach_vm_size_t
-   @-> returning kern_return_t)
+let mach_vm_deallocate = C.Functions.mach_vm_deallocate
 
 (** Routine vm_deallocate for cleanup *)
-let vm_deallocate =
-  foreign "vm_deallocate"
-    (vm_map_t @-> vm_offset_t @-> vm_size_t @-> returning kern_return_t)
+let vm_deallocate = C.Functions.vm_deallocate
 
 (** Types and functions from `mach/mach_port.h` *)
 
@@ -339,15 +317,8 @@ let ipc_space_t = mach_port_t
 type mach_port_right_t = natural_t
 
 let mach_port_right_t = natural_t
-
-let mach_port_allocate =
-  foreign "mach_port_allocate"
-    (ipc_space_t @-> mach_port_right_t @-> ptr mach_port_name_t
-   @-> returning kern_return_t)
-
-let mach_port_deallocate =
-  foreign "mach_port_deallocate"
-    (ipc_space_t @-> mach_port_name_t @-> returning kern_return_t)
+let mach_port_allocate = C.Functions.mach_port_allocate
+let mach_port_deallocate = C.Functions.mach_port_deallocate
 
 (** mach_msg_type_name_t constants for port rights *)
 let mach_msg_type_make_send : mach_msg_type_name_t =
@@ -357,10 +328,7 @@ let mach_msg_type_make_send : mach_msg_type_name_t =
 let mach_port_right_receive : mach_port_right_t =
   C.Types.mach_port_right_receive
 
-let mach_port_insert_right =
-  foreign "mach_port_insert_right"
-    (ipc_space_t @-> mach_port_name_t @-> mach_port_t @-> mach_msg_type_name_t
-   @-> returning kern_return_t)
+let mach_port_insert_right = C.Functions.mach_port_insert_right
 
 (* let mach_port_names = *)
 (*   foreign "mach_port_names" (ipc_space_t @-> ptr mach_port_name_array_t @-> ptr mach_msg_type_number_t *)
@@ -373,16 +341,9 @@ let mach_port_insert_right =
         int pid,
         mach_port_name_t *t);
  *)
-let task_for_pid =
-  foreign "task_for_pid"
-    (mach_port_t @-> pid_t @-> ptr mach_port_t @-> returning kern_return_t)
-
-let task_name_for_pid =
-  foreign "task_name_for_pid"
-    (mach_port_t @-> pid_t @-> ptr mach_port_t @-> returning kern_return_t)
-
-let pid_for_task =
-  foreign "pid_for_task" (mach_port_t @-> ptr pid_t @-> returning kern_return_t)
+let task_for_pid = C.Functions.task_for_pid
+let task_name_for_pid = C.Functions.task_name_for_pid
+let pid_for_task = C.Functions.pid_for_task
 
 (** Types defined in `mach/task_info.h` *)
 
@@ -400,12 +361,10 @@ type mach_error_t = natural_t
 let mach_error_t = natural_t
 
 (** Returns a string appropriate to the error argument given. *)
-let mach_error_string =
-  foreign "mach_error_string" (mach_error_t @-> returning string)
+let mach_error_string = C.Functions.mach_error_string
 
 (** Returns a string with the error system, subsystem and code. *)
-let mach_error_type =
-  foreign "mach_error_type" (mach_error_t @-> returning string)
+let mach_error_type = C.Functions.mach_error_type
 
 (** Types defined in `mach/types.h` *)
 
@@ -630,78 +589,46 @@ let exception_flavor_array_t = ptr thread_state_flavor_t
 let mach_port_array_t = ptr mach_port_t
 
 (** Routine task_terminate *)
-let task_terminate =
-  foreign "task_terminate" (task_t @-> returning kern_return_t)
+let task_terminate = C.Functions.task_terminate
 
 (** Routine task_threads *)
-let task_threads =
-  foreign "task_threads"
-    (task_t @-> ptr thread_act_array_t @-> ptr mach_msg_type_number_t
-   @-> returning kern_return_t)
+let task_threads = C.Functions.task_threads
 
 (** Routine mach_ports_register *)
-let mach_ports_register =
-  foreign "mach_ports_register"
-    (task_t @-> mach_port_array_t @-> mach_msg_type_number_t
-   @-> returning kern_return_t)
+let mach_ports_register = C.Functions.mach_ports_register
 
 (** Routine mach_ports_lookup *)
-let mach_ports_lookup =
-  foreign "mach_ports_lookup"
-    (task_t @-> ptr mach_port_array_t @-> ptr mach_msg_type_number_t
-   @-> returning kern_return_t)
+let mach_ports_lookup = C.Functions.mach_ports_lookup
 
 (** Routine task_info *)
-let task_info =
-  foreign "task_info"
-    (task_name_t @-> task_flavor_t @-> task_info_t
-   @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+let task_info = C.Functions.task_info
 
 (** Routine task_set_info *)
-let task_set_info =
-  foreign "task_set_info"
-    (task_name_t @-> task_flavor_t @-> task_info_t @-> mach_msg_type_number_t
-   @-> returning kern_return_t)
+let task_set_info = C.Functions.task_set_info
 
 (** Routine task_suspend *)
-let task_suspend = foreign "task_suspend" (task_t @-> returning kern_return_t)
+let task_suspend = C.Functions.task_suspend
 
 (** Routine task_resume *)
-let task_resume = foreign "task_resume" (task_t @-> returning kern_return_t)
+let task_resume = C.Functions.task_resume
 
 (** Routine task_get_special_port *)
-let task_get_special_port =
-  foreign "task_get_special_port"
-    (task_t @-> task_special_port_t @-> ptr mach_port_t
-   @-> returning kern_return_t)
+let task_get_special_port = C.Functions.task_get_special_port
 
 (** Routine task_set_special_port *)
-let task_set_specical_port =
-  foreign "task_set_special_port"
-    (task_t @-> int @-> mach_port_t @-> returning kern_return_t)
+let task_set_special_port = C.Functions.task_set_special_port
 
 (** Routine thread_create *)
-let thread_create =
-  foreign "thread_create"
-    (task_t @-> ptr thread_act_t @-> returning kern_return_t)
+let thread_create = C.Functions.thread_create
 
 (** Routine thread_create_running *)
-let thread_create_running =
-  foreign "thread_create_running"
-    (task_t @-> thread_state_flavor_t @-> ptr thread_state_t
-   @-> mach_msg_type_number_t @-> ptr thread_act_t @-> returning kern_return_t)
+let thread_create_running = C.Functions.thread_create_running
 
 (** Routine thread_get_state *)
-let thread_get_state =
-  foreign "thread_get_state"
-    (thread_act_t @-> thread_state_flavor_t @-> ptr thread_state_t
-   @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+let thread_get_state = C.Functions.thread_get_state
 
 (** Routine thread_set_state *)
-let thread_set_state =
-  foreign "thread_set_state"
-    (thread_act_t @-> thread_state_flavor_t @-> ptr thread_state_t
-   @-> mach_msg_type_number_t @-> returning kern_return_t)
+let thread_set_state = C.Functions.thread_set_state
 
 (** Types and functions from `mach/thread_info.h` *)
 
@@ -712,10 +639,7 @@ type thread_flavor_t = natural_t
 let thread_flavor_t = natural_t
 
 (** Routine thread_info *)
-let thread_info =
-  foreign "thread_info"
-    (thread_act_t @-> thread_flavor_t @-> thread_info_t
-   @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+let thread_info = C.Functions.thread_info
 
 (** Thread info flavors from mach/thread_info.h *)
 let thread_basic_info : thread_flavor_t = C.Types.thread_basic_info_flavor
@@ -750,18 +674,13 @@ let thread_handle = C.Types.tii_thread_handle
 let dispatch_qaddr = C.Types.tii_dispatch_qaddr
 
 (** Routine thread_suspend *)
-let thread_suspend =
-  foreign "thread_suspend" (thread_act_t @-> returning kern_return_t)
+let thread_suspend = C.Functions.thread_suspend
 
 (** Routine thread_resume *)
-let thread_resume =
-  foreign "thread_resume" (thread_act_t @-> returning kern_return_t)
+let thread_resume = C.Functions.thread_resume
 
 (** Routine task_set_exception_ports *)
-let task_set_exception_ports =
-  foreign "task_set_exception_ports"
-    (task_t @-> exception_mask_t @-> mach_port_t @-> exception_behavior_t
-   @-> thread_state_flavor_t @-> returning kern_return_t)
+let task_set_exception_ports = C.Functions.task_set_exception_ports
 
 (* typedef mach_port_t             exception_handler_t;  *)
 type exception_handler_t = mach_port_t
@@ -772,20 +691,12 @@ let exception_handler_t = mach_port_t
 let exception_handler_array_t = ptr exception_handler_t
 
 (** Routine task_get_exception_ports *)
-let task_get_exception_ports =
-  foreign "task_get_exception_ports"
-    (task_t @-> exception_mask_t @-> exception_mask_array_t
-   @-> ptr mach_msg_type_number_t @-> exception_handler_array_t
-   @-> exception_behavior_array_t @-> exception_flavor_array_t
-   @-> returning kern_return_t)
+let task_get_exception_ports = C.Functions.task_get_exception_ports
 
 (** Types and functions defined in `mach/mach_init.h` *)
 
-let mach_thread_self : unit -> mach_port_t =
-  foreign "mach_thread_self" (void @-> returning mach_port_t)
-
-let mach_task_self : unit -> mach_port_t =
-  foreign "mach_task_self" (void @-> returning mach_port_t)
+let mach_thread_self = C.Functions.mach_thread_self
+let mach_task_self = C.Functions.mach_task_self
 
 (** Types from `sys/_types.h` *)
 let uid_t = uint32_t
@@ -914,11 +825,7 @@ let pbsi_svgid = C.Types.pbsi_svgid
 let pbsi_rfu = C.Types.pbsi_rfu
 
 (* int proc_pidinfo(int pid, int flavor, uint64_t arg, void *buffer, int buffersize); *)
-let proc_pidinfo =
-  foreign "proc_pidinfo"
-    (pid_t @-> int @-> uint64_t @-> ptr void @-> int @-> returning int)
+let proc_pidinfo = C.Functions.proc_pidinfo
 
 (* int proc_regionfilename(int pid, uint64_t address, void * buffer, uint32_t buffersize) *)
-let proc_regionfilename =
-  foreign "proc_regionfilename"
-    (pid_t @-> uint64_t @-> ptr void @-> uint32_t @-> returning int)
+let proc_regionfilename = C.Functions.proc_regionfilename
