@@ -21,6 +21,7 @@ module Types (F : Ctypes.TYPE) = struct
   let mach_port_name_t = typedef natural_t "mach_port_name_t"
   let mach_port_right_t = typedef natural_t "mach_port_right_t"
   let mach_msg_type_name_t = typedef natural_t "mach_msg_type_name_t"
+  let mach_port_delta_t = typedef integer_t "mach_port_delta_t"
   let mach_msg_type_number_t = typedef natural_t "mach_msg_type_number_t"
   let mach_vm_address_t = typedef uint64_t "mach_vm_address_t"
   let mach_vm_size_t = typedef uint64_t "mach_vm_size_t"
@@ -39,6 +40,8 @@ module Types (F : Ctypes.TYPE) = struct
   let thread_info_t = typedef (ptr integer_t) "thread_info_t"
   let thread_act_array_t = typedef (ptr thread_act_t) "thread_act_array_t"
   let mach_port_array_t = typedef (ptr mach_port_t) "mach_port_array_t"
+  let vm_region_flavor_t = typedef integer_t "vm_region_flavor_t"
+  let vm_region_info_t = typedef (ptr integer_t) "vm_region_info_t"
 
   let vm_region_recurse_info_t =
     typedef (ptr integer_t) "vm_region_recurse_info_t"
@@ -162,6 +165,13 @@ module Types (F : Ctypes.TYPE) = struct
      which carries no thread state. *)
   let thread_state_none = constant "THREAD_STATE_NONE" int32_t
 
+  (* mach/vm_region.h flavors *)
+  let vm_region_basic_info_64_flavor =
+    constant "VM_REGION_BASIC_INFO_64" int32_t
+
+  let vm_region_basic_info_count_64 =
+    constant "VM_REGION_BASIC_INFO_COUNT_64" int
+
   (* mach/vm_prot.h *)
   let vm_prot_read = constant "VM_PROT_READ" int32_t
   let vm_prot_write = constant "VM_PROT_WRITE" int32_t
@@ -169,6 +179,7 @@ module Types (F : Ctypes.TYPE) = struct
 
   (* mach/port.h and mach/message.h *)
   let mach_port_right_receive = constant "MACH_PORT_RIGHT_RECEIVE" uint32_t
+  let mach_port_right_send = constant "MACH_PORT_RIGHT_SEND" uint32_t
   let mach_msg_type_make_send = constant "MACH_MSG_TYPE_MAKE_SEND" uint32_t
 
   (* mach_thread_state.h. Declared locally because <mach/arm/_structs.h> is

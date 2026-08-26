@@ -319,6 +319,14 @@ type mach_port_right_t = natural_t
 let mach_port_right_t = natural_t
 let mach_port_allocate = C.Functions.mach_port_allocate
 let mach_port_deallocate = C.Functions.mach_port_deallocate
+let mach_port_mod_refs = C.Functions.mach_port_mod_refs
+
+type mach_port_delta_t = integer_t
+
+let mach_port_delta_t = integer_t
+
+(** MACH_PORT_RIGHT_SEND *)
+let mach_port_right_send : mach_port_right_t = C.Types.mach_port_right_send
 
 (** mach_msg_type_name_t constants for port rights *)
 let mach_msg_type_make_send : mach_msg_type_name_t =
@@ -675,6 +683,32 @@ let dispatch_qaddr = C.Types.tii_dispatch_qaddr
 
 (** Routine thread_suspend *)
 let thread_suspend = C.Functions.thread_suspend
+
+(** Routine mach_vm_region *)
+let mach_vm_region = C.Functions.mach_vm_region
+
+type vm_region_flavor_t = integer_t
+(** Selects which vm_region info structure is returned. *)
+
+let vm_region_flavor_t = integer_t
+
+(** VM_REGION_BASIC_INFO_64 and its count, for use with [mach_vm_region] *)
+let vm_region_basic_info_64_flavor : vm_region_flavor_t =
+  C.Types.vm_region_basic_info_64_flavor
+
+let vm_region_basic_info_count_64 = C.Types.vm_region_basic_info_count_64
+
+(** Routine thread_abort *)
+let thread_abort = C.Functions.thread_abort
+
+(** Routine thread_abort_safely *)
+let thread_abort_safely = C.Functions.thread_abort_safely
+
+(** Routine thread_set_exception_ports *)
+let thread_set_exception_ports = C.Functions.thread_set_exception_ports
+
+(** Routine thread_get_exception_ports *)
+let thread_get_exception_ports = C.Functions.thread_get_exception_ports
 
 (** Routine thread_resume *)
 let thread_resume = C.Functions.thread_resume

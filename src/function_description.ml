@@ -61,6 +61,12 @@ module Functions (F : Ctypes.FOREIGN) = struct
      @-> ptr Types.mach_port_name_t
       @-> returning Types.kern_return_t)
 
+  let mach_port_mod_refs =
+    foreign "mach_port_mod_refs"
+      (Types.ipc_space_t @-> Types.mach_port_name_t @-> Types.mach_port_right_t
+     @-> Types.mach_port_delta_t
+      @-> returning Types.kern_return_t)
+
   let mach_port_deallocate =
     foreign "mach_port_deallocate"
       (Types.ipc_space_t @-> Types.mach_port_name_t
@@ -206,4 +212,36 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let proc_regionfilename =
     foreign "proc_regionfilename"
       (pid_t @-> uint64_t @-> ptr void @-> uint32_t @-> returning int)
+
+  let mach_vm_region =
+    foreign "mach_vm_region"
+      (Types.vm_task_entry_t
+      @-> ptr Types.mach_vm_address_t
+      @-> ptr Types.mach_vm_size_t @-> Types.vm_region_flavor_t
+      @-> Types.vm_region_info_t
+      @-> ptr Types.mach_msg_type_number_t
+      @-> ptr Types.mach_port_t
+      @-> returning Types.kern_return_t)
+
+  let thread_abort =
+    foreign "thread_abort" (Types.thread_act_t @-> returning Types.kern_return_t)
+
+  let thread_abort_safely =
+    foreign "thread_abort_safely"
+      (Types.thread_act_t @-> returning Types.kern_return_t)
+
+  let thread_set_exception_ports =
+    foreign "thread_set_exception_ports"
+      (Types.thread_act_t @-> Types.exception_mask_t @-> Types.mach_port_t
+     @-> Types.exception_behavior_t @-> Types.thread_state_flavor_t
+      @-> returning Types.kern_return_t)
+
+  let thread_get_exception_ports =
+    foreign "thread_get_exception_ports"
+      (Types.thread_act_t @-> Types.exception_mask_t
+     @-> Types.exception_mask_array_t
+      @-> ptr Types.mach_msg_type_number_t
+      @-> Types.exception_handler_array_t @-> Types.exception_behavior_array_t
+      @-> Types.exception_flavor_array_t
+      @-> returning Types.kern_return_t)
 end
