@@ -217,8 +217,14 @@ type memory_object_offset_t = uint64_t
 
 let memory_object_offset_t = uint64_t
 
-type vm_region_info_t = natural_t
-type vm_region_info_64_t = natural_t
+type vm_region_info_t = integer_t ptr
+(** A caller-supplied buffer for the info structure selected by the flavor. *)
+
+let vm_region_info_t = ptr integer_t
+
+type vm_region_info_64_t = vm_region_info_t
+
+let vm_region_info_64_t = vm_region_info_t
 
 type vm_region_recurse_info_t = integer_t ptr
 (** A pointer to a caller-supplied info buffer, not a scalar. *)
@@ -554,6 +560,10 @@ let exc_mask_corpse_notify : exception_mask_t = C.Types.exc_mask_corpse_notify
 (** EXC_MASK_ALL. Excludes EXC_MASK_CRASH and EXC_MASK_CORPSE_NOTIFY, which
     belong to the crash reporter rather than to a debugger. *)
 let exc_mask_all : exception_mask_t = C.Types.exc_mask_all
+
+(** EXC_TYPES_COUNT: the number of exception types, and so the largest number of
+    handlers a task can have registered. *)
+let exc_types_count = C.Types.exc_types_count
 
 (** Machine-independent exception behaviors *)
 

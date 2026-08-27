@@ -152,6 +152,7 @@ module Types (F : Ctypes.TYPE) = struct
 
   (* EXC_SOFTWARE code marking a Unix signal *)
   let exc_soft_signal = constant "EXC_SOFT_SIGNAL" int32_t
+  let exc_types_count = constant "EXC_TYPES_COUNT" int
 
   (* mach/exception_types.h - behaviours *)
   let exception_default = constant "EXCEPTION_DEFAULT" int32_t
