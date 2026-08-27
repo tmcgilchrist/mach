@@ -329,14 +329,17 @@ module Types (F : Ctypes.TYPE) = struct
   let vms_user_wired_count =
     field vm_region_submap_info_64 "user_wired_count" ushort
 
-  let vms_flags = field vm_region_submap_info_64 "flags" ushort
+  (* let vms_flags = field vm_region_submap_info_64 "flags" ushort *)
+  (* let vms_pages_reusable = *)
+  (*   field vm_region_submap_info_64 "pages_reusable" uint32_t *)
 
-  let vms_pages_reusable =
-    field vm_region_submap_info_64 "pages_reusable" uint32_t
+  (* let vms_object_id_full = *)
+  (*   field vm_region_submap_info_64 "object_id_full" uint64_t *)
 
-  let vms_object_id_full =
-    field vm_region_submap_info_64 "object_id_full" uint64_t
-
+  (* The fields past user_wired_count - flags, and the v1 and v2 additions
+     pages_reusable and object_id_full - are not present in every SDK, so they
+     are left undescribed. sizeof still comes from the C struct, so a caller
+     computing an info count from it gets the right answer. *)
   let () = seal vm_region_submap_info_64
 
   (* sys/proc_info.h *)

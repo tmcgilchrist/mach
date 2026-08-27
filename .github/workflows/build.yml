@@ -23,6 +23,12 @@ jobs:
         ocaml-compiler:
           - "4.14"
           - "5.3"
+        # The oldest SDK mach supports and the current one. Constants and
+        # struct layouts are read from the headers, so the two can disagree:
+        # Xcode 16.4 carries the macOS 15.5 SDK and 26.2 the macOS 26.2 SDK.
+        xcode:
+          - "16.4"
+          - "26.2"
 
     runs-on: ${{ matrix.os }}
 
@@ -35,16 +41,19 @@ jobs:
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
 
-      - name: Select Xcode
+      - name: Select Xcode ${{ matrix.xcode }}
         run: |
-          # macos-15 and macos-15-intel are the same image family, so both
-          # architectures can pin the same Xcode and build against one SDK.
-          # Tolerate its absence rather than failing the job on an image
-          # refresh; the version is logged either way.
-          if [ -d /Applications/Xcode_16.4.app ]; then
-            sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer
+          # Fail rather than fall back: a job that silently built against a
+          # different SDK than the one it names proves nothing.
+          xcode=/Applications/Xcode_${{ matrix.xcode }}.app
+          if [ ! -d "$xcode" ]; then
+            echo "$xcode is not installed on this runner" >&2
+            ls -d /Applications/Xcode*.app >&2
+            exit 1
           fi
+          sudo xcode-select -s "$xcode/Contents/Developer"
           xcodebuild -version
+          xcrun --show-sdk-version
 
       - name: Install dependencies
         run: |

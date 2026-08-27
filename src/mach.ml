@@ -284,9 +284,10 @@ let is_submap = C.Types.vms_is_submap
 let submap_behavior = C.Types.vms_behavior
 let object_id = C.Types.vms_object_id
 let submap_user_wired_count = C.Types.vms_user_wired_count
-let submap_flags = C.Types.vms_flags
-let pages_reusable = C.Types.vms_pages_reusable
-let object_id_full = C.Types.vms_object_id_full
+(* TODO How to handle flags that appear in a newer SDK version? *)
+(* let submap_flags = C.Types.vms_flags *)
+(* let pages_reusable = C.Types.vms_pages_reusable *)
+(* let object_id_full = C.Types.vms_object_id_full *)
 
 type vm_region_submap_info_data_64_t = vm_region_submap_info_64
 
