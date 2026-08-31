@@ -1,5 +1,4 @@
 open Ctypes
-open PosixTypes
 
 (** Types defined in `mach/i386/vm_types.h` *)
 
