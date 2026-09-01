@@ -369,10 +369,10 @@ type task_flavor_t = natural_t
 
 let task_flavor_t = natural_t
 
-type mach_error_t = natural_t
+type mach_error_t = kern_return_t
 (** Types defined in `mach/mach_error.h` *)
 
-let mach_error_t = natural_t
+let mach_error_t = kern_return_t
 
 (** Returns a string appropriate to the error argument given. *)
 let mach_error_string = C.Functions.mach_error_string

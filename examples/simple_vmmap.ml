@@ -94,18 +94,18 @@ let vmmap task start_ end_ (depth : int) =
   while !break == false do
     let address = allocate mach_vm_address_t !start_ in
     let size = allocate mach_vm_size_t Unsigned.UInt64.zero in
-    let depth0 = allocate vm_region_recurse_info_t (Int32.of_int depth) in
+    let depth0 = allocate natural_t (Unsigned.UInt32.of_int depth) in
     let info =
       allocate vm_region_submap_info_data_64_t
         (make vm_region_submap_info_data_64_t)
     in
     let count =
       allocate mach_msg_type_number_t
-        (Int32.of_int vm_region_submap_info_count_64)
+        (Unsigned.UInt32.of_int vm_region_submap_info_count_64)
     in
     let kr =
       Mach.mach_vm_region_recurse !@task address size depth0
-        (to_voidp info |> from_voidp vm_region_recurse_info_t)
+        (to_voidp info |> from_voidp integer_t)
         count
     in
 
@@ -119,7 +119,7 @@ let vmmap task start_ end_ (depth : int) =
          info.protection and info.max_protection.
          Here we simplify that to current permissions.
        *)
-      let pr, pw, px = get_memory_protection (getf !@info protection) in
+      let pr, pw, px = get_memory_protection (getf !@info submap_protection) in
       let ps = '-' in
       let pathname = CArray.make char (4 + 4096) in
       let _kr =
@@ -150,7 +150,7 @@ let () =
     let depth = 2048 in
     let self = Mach.mach_task_self () in
     let pid = PosixTypes.Pid.of_string Sys.argv.(1) in
-    let task = allocate uint64_t Unsigned.UInt64.zero in
+    let task = allocate mach_port_t Unsigned.UInt32.zero in
     let kr = Mach.task_for_pid self pid task in
     if not (Int32.equal kr kern_success) then (
       Printf.printf "task_for_pid(%d) failed: %s\n" (Pid.to_int pid)

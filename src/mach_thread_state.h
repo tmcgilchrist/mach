@@ -157,6 +157,7 @@ MACH_ASSERT_TYPE(integer_t, 4, 0);
    portable. It only ever carries 0 or 1, so the signedness does not matter. */
 _Static_assert(sizeof(boolean_t) == 4, "sizeof(boolean_t) is not 4");
 MACH_ASSERT_TYPE(kern_return_t, 4, 0);
+MACH_ASSERT_TYPE(mach_error_t, 4, 0);
 MACH_ASSERT_TYPE(mach_port_t, 4, 1);
 MACH_ASSERT_TYPE(mach_port_name_t, 4, 1);
 MACH_ASSERT_TYPE(mach_msg_type_number_t, 4, 1);
