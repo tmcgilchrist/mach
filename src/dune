@@ -7,4 +7,33 @@
  ; Ignore unused code while hacking
  (enabled_if
   (= %{system} "macosx"))
+ ; Constants and struct layouts come from the system headers via ctypes stub
+ ; generation, so the C compiler resolves each one and a value cannot silently
+ ; disagree with the header. The per-architecture thread states are declared in
+ ; mach_thread_state.h, which the arch-guarded system headers do not expose to
+ ; a build for the other architecture.
+ (ctypes
+  (external_library_name none)
+  (build_flags_resolver
+   (vendored
+    (c_flags
+     (-I .))))
+  (headers
+   (include
+    "mach/mach.h"
+    "mach/mach_vm.h"
+    "mach/thread_status.h"
+    "mach/exception_types.h"
+    "mach/vm_region.h"
+    "mach/thread_info.h"
+    "libproc.h"
+    "sys/proc_info.h"
+    "mach_thread_state.h"))
+  (type_description
+   (instance Types)
+   (functor Type_description))
+  (function_description
+   (instance Functions)
+   (functor Function_description))
+  (generated_entry_point C))
  (libraries ctypes-foreign))

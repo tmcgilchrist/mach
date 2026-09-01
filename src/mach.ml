@@ -1,14 +1,12 @@
 open Ctypes
-open PosixTypes
-open Foreign
 
 (** Types defined in `mach/i386/vm_types.h` *)
 
-type natural_t = int32
-(** [natural_t] and [integer_t] are Mach's legacy types for machine- independent
-    integer types (unsigned, and signed, respectively). *)
+type natural_t = Unsigned.uint32
+(** [natural_t] and [integer_t] are Mach's legacy types for machine-independent
+    integer types, unsigned and signed respectively. *)
 
-let natural_t = Ctypes_static.Primitive Ctypes_primitive_types.Int32_t
+let natural_t = uint32_t
 
 type integer_t = int32
 
@@ -62,9 +60,10 @@ type mach_port_context_t = mach_vm_address_t
 
 let mach_port_context_t = mach_vm_address_t
 
-type mach_port_t = uint64_t
+type mach_port_t = Unsigned.uint32
+(** A port name, [natural_t] wide. *)
 
-let mach_port_t = uint64_t
+let mach_port_t = uint32_t
 
 type task_t = mach_port_t
 
@@ -84,6 +83,11 @@ let vm_task_entry_t = mach_port_t
 
 (** Types and functions corresponding to `mach/port.h` *)
 
+type mach_msg_type_name_t = natural_t
+(** Names a port right being transferred in a message. *)
+
+let mach_msg_type_name_t = natural_t
+
 type mach_port_name_t = natural_t
 (** [mach_port_name_t] - the local identity for a Mach port
 
@@ -101,68 +105,81 @@ let mach_port_name_t = natural_t
 (* This type corresponds to `mach/arm/kern_return.h` or
    `mach/i386/kern_return.h` as it is the same for
    both architectures *)
-type kern_return_t = natural_t
+type kern_return_t = integer_t
+(** A signed C [int], despite the Mach naming. *)
 
-let kern_return_t = natural_t
-let kern_success : kern_return_t = 0l
-let kern_invalid_address : kern_return_t = 1l
-let kern_protection_failure : kern_return_t = 2l
-let kern_no_space : kern_return_t = 3l
-let kern_invalid_argument : kern_return_t = 4l
-let kern_failure : kern_return_t = 5l
-let kern_resource_shortage : kern_return_t = 6l
-let kern_not_receiver : kern_return_t = 7l
-let kern_no_access : kern_return_t = 8l
-let kern_memory_failure : kern_return_t = 9l
-let kern_memory_error : kern_return_t = 10l
-let kern_already_in_set : kern_return_t = 11l
-let kern_not_in_set : kern_return_t = 12l
-let kern_name_exists : kern_return_t = 13l
-let kern_aborted : kern_return_t = 14l
-let kern_invalid_name : kern_return_t = 15l
-let kern_invalid_task : kern_return_t = 16l
-let kern_invalid_right : kern_return_t = 17l
-let kern_invalid_value : kern_return_t = 18l
-let kern_urefs_overflow : kern_return_t = 19l
-let kern_invalid_capability : kern_return_t = 20l
-let kern_right_exists : kern_return_t = 21l
-let kern_invalid_host : kern_return_t = 22l
-let kern_memory_present : kern_return_t = 23l
-let kern_memory_data_moved : kern_return_t = 24l
-let kern_memory_restart_copy : kern_return_t = 25l
-let kern_invalid_processor_set : kern_return_t = 26l
-let kern_policy_limit : kern_return_t = 27l
-let kern_invalid_policy : kern_return_t = 28l
-let kern_invalid_object : kern_return_t = 29l
-let kern_already_waiting : kern_return_t = 30l
-let kern_default_set : kern_return_t = 31l
-let kern_exception_protected : kern_return_t = 32l
-let kern_invalid_ledger : kern_return_t = 33l
-let kern_invalid_memory_control : kern_return_t = 34l
-let kern_invalid_security : kern_return_t = 35l
-let kern_not_depressed : kern_return_t = 36l
-let kern_terminated : kern_return_t = 37l
-let kern_lock_set_destroyed : kern_return_t = 38l
-let kern_lock_unstable : kern_return_t = 39l
-let kern_lock_owned : kern_return_t = 40l
-let kern_lock_owned_self : kern_return_t = 41l
-let kern_semaphore_destroyed : kern_return_t = 42l
-let kern_rpc_server_terminated : kern_return_t = 43l
-let kern_rpc_terminate_orphan : kern_return_t = 44l
-let kern_rpc_continue_orphan : kern_return_t = 45l
-let kern_not_supported : kern_return_t = 46l
-let kern_node_down : kern_return_t = 47l
-let kern_not_waiting : kern_return_t = 48l
-let kern_operation_timed_out : kern_return_t = 49l
-let kern_codesign_error : kern_return_t = 50l
-let kern_policy_static : kern_return_t = 51l
-let kern_return_max : kern_return_t = 0x100l
+let kern_return_t = integer_t
+let kern_success : kern_return_t = C.Types.kern_success
+let kern_invalid_address : kern_return_t = C.Types.kern_invalid_address
+let kern_protection_failure : kern_return_t = C.Types.kern_protection_failure
+let kern_no_space : kern_return_t = C.Types.kern_no_space
+let kern_invalid_argument : kern_return_t = C.Types.kern_invalid_argument
+let kern_failure : kern_return_t = C.Types.kern_failure
+let kern_resource_shortage : kern_return_t = C.Types.kern_resource_shortage
+let kern_not_receiver : kern_return_t = C.Types.kern_not_receiver
+let kern_no_access : kern_return_t = C.Types.kern_no_access
+let kern_memory_failure : kern_return_t = C.Types.kern_memory_failure
+let kern_memory_error : kern_return_t = C.Types.kern_memory_error
+let kern_already_in_set : kern_return_t = C.Types.kern_already_in_set
+let kern_not_in_set : kern_return_t = C.Types.kern_not_in_set
+let kern_name_exists : kern_return_t = C.Types.kern_name_exists
+let kern_aborted : kern_return_t = C.Types.kern_aborted
+let kern_invalid_name : kern_return_t = C.Types.kern_invalid_name
+let kern_invalid_task : kern_return_t = C.Types.kern_invalid_task
+let kern_invalid_right : kern_return_t = C.Types.kern_invalid_right
+let kern_invalid_value : kern_return_t = C.Types.kern_invalid_value
+let kern_urefs_overflow : kern_return_t = C.Types.kern_urefs_overflow
+let kern_invalid_capability : kern_return_t = C.Types.kern_invalid_capability
+let kern_right_exists : kern_return_t = C.Types.kern_right_exists
+let kern_invalid_host : kern_return_t = C.Types.kern_invalid_host
+let kern_memory_present : kern_return_t = C.Types.kern_memory_present
+let kern_memory_data_moved : kern_return_t = C.Types.kern_memory_data_moved
+let kern_memory_restart_copy : kern_return_t = C.Types.kern_memory_restart_copy
+
+let kern_invalid_processor_set : kern_return_t =
+  C.Types.kern_invalid_processor_set
+
+let kern_policy_limit : kern_return_t = C.Types.kern_policy_limit
+let kern_invalid_policy : kern_return_t = C.Types.kern_invalid_policy
+let kern_invalid_object : kern_return_t = C.Types.kern_invalid_object
+let kern_already_waiting : kern_return_t = C.Types.kern_already_waiting
+let kern_default_set : kern_return_t = C.Types.kern_default_set
+let kern_exception_protected : kern_return_t = C.Types.kern_exception_protected
+let kern_invalid_ledger : kern_return_t = C.Types.kern_invalid_ledger
+
+let kern_invalid_memory_control : kern_return_t =
+  C.Types.kern_invalid_memory_control
+
+let kern_invalid_security : kern_return_t = C.Types.kern_invalid_security
+let kern_not_depressed : kern_return_t = C.Types.kern_not_depressed
+let kern_terminated : kern_return_t = C.Types.kern_terminated
+let kern_lock_set_destroyed : kern_return_t = C.Types.kern_lock_set_destroyed
+let kern_lock_unstable : kern_return_t = C.Types.kern_lock_unstable
+let kern_lock_owned : kern_return_t = C.Types.kern_lock_owned
+let kern_lock_owned_self : kern_return_t = C.Types.kern_lock_owned_self
+let kern_semaphore_destroyed : kern_return_t = C.Types.kern_semaphore_destroyed
+
+let kern_rpc_server_terminated : kern_return_t =
+  C.Types.kern_rpc_server_terminated
+
+let kern_rpc_terminate_orphan : kern_return_t =
+  C.Types.kern_rpc_terminate_orphan
+
+let kern_rpc_continue_orphan : kern_return_t = C.Types.kern_rpc_continue_orphan
+let kern_not_supported : kern_return_t = C.Types.kern_not_supported
+let kern_node_down : kern_return_t = C.Types.kern_node_down
+let kern_not_waiting : kern_return_t = C.Types.kern_not_waiting
+let kern_operation_timed_out : kern_return_t = C.Types.kern_operation_timed_out
+let kern_codesign_error : kern_return_t = C.Types.kern_codesign_error
+let kern_policy_static : kern_return_t = C.Types.kern_policy_static
+let kern_return_max : kern_return_t = C.Types.kern_return_max
 
 (** Types corresponds to `mach/i386/boolean.h` *)
 
-type boolean_t = Unsigned.uint32
+type boolean_t = int32
+(** A C [int]. *)
 
-let boolean_t = Ctypes_static.Primitive Ctypes_primitive_types.Uint32_t
+let boolean_t = int32_t
 
 type mach_msg_type_number_t = natural_t
 (** Types corresponds to `mach/message.h` *)
@@ -177,37 +194,46 @@ let vm_prot_t = integer_t
 (** Protection values, defined as bits within the [vm_prot_t] type. *)
 
 (** Read permissions *)
-let vm_prot_read = Int32.of_int 0x01
+let vm_prot_read = C.Types.vm_prot_read
 
 (** Write permissions *)
-let vm_prot_write = Int32.of_int 0x02
+let vm_prot_write = C.Types.vm_prot_write
 
 (** Execute permissions *)
-let vm_prot_execute = Int32.of_int 0x04
+let vm_prot_execute = C.Types.vm_prot_execute
 
 (** The default protection for newly-created virtual memory *)
 let vm_prot_default = Int32.logor vm_prot_read vm_prot_write
 
 (** Types corresponding to `mach/vm_region.h` *)
 
-type vm_inherit_t = integer_t
+type vm_inherit_t = natural_t
 
-let vm_inherit_t = integer_t
+let vm_inherit_t = natural_t
 
-type memory_object_offset_t = natural_t
+type memory_object_offset_t = uint64_t
+(** A 64-bit offset into a memory object. *)
 
-let memory_object_offset_t = natural_t
+let memory_object_offset_t = uint64_t
 
-type vm_region_info_t = natural_t
-type vm_region_info_64_t = natural_t
-type vm_region_recurse_info_t = natural_t
+type vm_region_info_t = integer_t ptr
+(** A caller-supplied buffer for the info structure selected by the flavor. *)
 
-let vm_region_recurse_info_t = natural_t
+let vm_region_info_t = ptr integer_t
+
+type vm_region_info_64_t = vm_region_info_t
+
+let vm_region_info_64_t = vm_region_info_t
+
+type vm_region_recurse_info_t = integer_t ptr
+(** A pointer to a caller-supplied info buffer, not a scalar. *)
+
+let vm_region_recurse_info_t = ptr integer_t
 
 type vm_region_recurse_info_64_t = natural_t
-type vm_behavior_t = natural_t
+type vm_behavior_t = integer_t
 
-let vm_behavior_t = natural_t
+let vm_behavior_t = integer_t
 
 type vm32_object_id_t = Unsigned.uint32
 
@@ -217,105 +243,50 @@ type vm_object_id_t = Unsigned.uint64
 
 let vm_object_id_t = Ctypes_static.Primitive Ctypes_primitive_types.Uint64_t
 
-type vm_region_basic_info_64
+type vm_region_basic_info_64 = C.Types.vm_region_basic_info_64
 
 let vm_region_basic_info_64 : vm_region_basic_info_64 structure typ =
-  structure "vm_region_basic_info_64"
+  C.Types.vm_region_basic_info_64
 
-let protection =
-  field vm_region_basic_info_64 "protection"
-    vm_prot_t (* present access protection *)
-
-let max_protection =
-  field vm_region_basic_info_64 "max_protection"
-    vm_prot_t (* max avail through vm_prot *)
-
-let inheritance =
-  field vm_region_basic_info_64 "inheritance"
-    vm_inherit_t (* behavior of map/obj on fork *)
-
-let shared = field vm_region_basic_info_64 "shared" boolean_t
-let reserved = field vm_region_basic_info_64 "reserved" boolean_t
-let offset = field vm_region_basic_info_64 "offset" memory_object_offset_t
-let behavior = field vm_region_basic_info_64 "behavior" vm_behavior_t
-let user_wired_count = field vm_region_basic_info_64 "user_wired_count" ushort
-let () = seal vm_region_basic_info_64
+let protection = C.Types.vmr_protection
+let max_protection = C.Types.vmr_max_protection
+let inheritance = C.Types.vmr_inheritance
+let shared = C.Types.vmr_shared
+let reserved = C.Types.vmr_reserved
+let offset = C.Types.vmr_offset
+let behavior = C.Types.vmr_behavior
+let user_wired_count = C.Types.vmr_user_wired_count
 
 type vm_region_basic_info_64_t = vm_region_basic_info_64
 
 let vm_region_basic_info_64_t = vm_region_basic_info_64
 
-type vm_region_submap_info_64
+type vm_region_submap_info_64 = C.Types.vm_region_submap_info_64
 
 let vm_region_submap_info_64 : vm_region_submap_info_64 structure typ =
-  structure "vm_region_submap_info_64"
+  C.Types.vm_region_submap_info_64
 
-let protection =
-  field vm_region_submap_info_64 "protection"
-    vm_prot_t (* present access protection *)
-
-let max_protection =
-  field vm_region_submap_info_64 "max_protection"
-    vm_prot_t (* max avail through vm_prot *)
-
-let inheritance =
-  field vm_region_submap_info_64 "inheritance"
-    vm_inherit_t (* behavior of map/obj on fork *)
-
-let offset =
-  field vm_region_submap_info_64 "offset"
-    memory_object_offset_t (* offset into object/map *)
-
-let user_tag =
-  field vm_region_submap_info_64 "user_tag" uint32_t (* user tag on map entry *)
-
-let pages_resident =
-  field vm_region_submap_info_64 "pages_resident"
-    uint32_t (* only valid for objects *)
-
-let pages_shared_now_private =
-  field vm_region_submap_info_64 "pages_shared_now_private"
-    uint32_t (* only for objects *)
-
-let pages_swapped_out =
-  field vm_region_submap_info_64 "pages_swapped_out"
-    uint32_t (* only for objects *)
-
-let pages_dirtied =
-  field vm_region_submap_info_64 "pages_dirtied" uint32_t (* only for objects *)
-
-let ref_count =
-  field vm_region_submap_info_64 "ref_count" uint32_t (* obj/map mappers, etc *)
-
-let shadow_depth =
-  field vm_region_submap_info_64 "shadow_depth" uint16_t (* only for obj *)
-
-let external_pager =
-  field vm_region_submap_info_64 "external_pager" uchar (* only for obj *)
-
-let share_mode =
-  field vm_region_submap_info_64 "share_mode" uchar (* see enumeration *)
-
-let is_submap =
-  field vm_region_submap_info_64 "is_submap" int32_t (* submap vs obj *)
-
-let behavior =
-  field vm_region_submap_info_64 "behavior"
-    vm_behavior_t (* access behavior hint *)
-
-let object_id =
-  field vm_region_submap_info_64 "object_id"
-    vm32_object_id_t (* obj/map name, not a handle *)
-
-let user_wired_count =
-  field vm_region_submap_info_64 "user_wired_count" uint16_t
-
-let pages_reusable = field vm_region_submap_info_64 "pages_reusable" uint32_t
-
-let object_id_full =
-  field vm_region_submap_info_64 "object_id_full" vm_object_id_t
-
-let () = seal vm_region_submap_info_64
+let submap_protection = C.Types.vms_protection
+let submap_max_protection = C.Types.vms_max_protection
+let submap_inheritance = C.Types.vms_inheritance
+let submap_offset = C.Types.vms_offset
+let user_tag = C.Types.vms_user_tag
+let pages_resident = C.Types.vms_pages_resident
+let pages_shared_now_private = C.Types.vms_pages_shared_now_private
+let pages_swapped_out = C.Types.vms_pages_swapped_out
+let pages_dirtied = C.Types.vms_pages_dirtied
+let ref_count = C.Types.vms_ref_count
+let shadow_depth = C.Types.vms_shadow_depth
+let external_pager = C.Types.vms_external_pager
+let share_mode = C.Types.vms_share_mode
+let is_submap = C.Types.vms_is_submap
+let submap_behavior = C.Types.vms_behavior
+let object_id = C.Types.vms_object_id
+let submap_user_wired_count = C.Types.vms_user_wired_count
+(* TODO How to handle flags that appear in a newer SDK version? *)
+(* let submap_flags = C.Types.vms_flags *)
+(* let pages_reusable = C.Types.vms_pages_reusable *)
+(* let object_id_full = C.Types.vms_object_id_full *)
 
 type vm_region_submap_info_data_64_t = vm_region_submap_info_64
 
@@ -323,47 +294,25 @@ let vm_region_submap_info_data_64_t = vm_region_submap_info_64
 
 (** Types and functions from `mach/mach_vm.h` *)
 
-let mach_vm_region_recurse =
-  foreign "mach_vm_region_recurse"
-    (vm_task_entry_t @-> ptr mach_vm_address_t @-> ptr mach_vm_size_t
-   @-> ptr natural_t
-    @-> ptr vm_region_recurse_info_t
-    @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+let mach_vm_region_recurse = C.Functions.mach_vm_region_recurse
 
 (** Routine mach_vm_read *)
-let mach_vm_read =
-  foreign "mach_vm_read"
-    (vm_map_t @-> mach_vm_address_t @-> mach_vm_size_t @-> ptr vm_offset_t
-   @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+let mach_vm_read = C.Functions.mach_vm_read
 
 (** Routine mach_vm_write *)
-let mach_vm_write =
-  foreign "mach_vm_write"
-    (vm_map_t @-> mach_vm_address_t @-> vm_offset_t @-> mach_msg_type_number_t
-   @-> returning kern_return_t)
+let mach_vm_write = C.Functions.mach_vm_write
 
 (** Routine mach_vm_protect *)
-let mach_vm_protect =
-  foreign "mach_vm_protect"
-    (vm_map_t @-> mach_vm_address_t @-> mach_vm_size_t @-> boolean_t
-   @-> vm_prot_t @-> returning kern_return_t)
+let mach_vm_protect = C.Functions.mach_vm_protect
 
 (** Routine mach_vm_allocate *)
-let mach_vm_allocate =
-  foreign "mach_vm_allocate"
-    (vm_map_t @-> ptr mach_vm_address_t @-> mach_vm_size_t @-> int
-   @-> returning kern_return_t)
+let mach_vm_allocate = C.Functions.mach_vm_allocate
 
 (** Routine mach_vm_deallocate *)
-let mach_vm_deallocate =
-  foreign "mach_vm_deallocate"
-    (vm_map_t @-> mach_vm_address_t @-> mach_vm_size_t
-   @-> returning kern_return_t)
+let mach_vm_deallocate = C.Functions.mach_vm_deallocate
 
 (** Routine vm_deallocate for cleanup *)
-let vm_deallocate =
-  foreign "vm_deallocate"
-    (vm_map_t @-> vm_offset_t @-> mach_vm_size_t @-> returning kern_return_t)
+let vm_deallocate = C.Functions.vm_deallocate
 
 (** Types and functions from `mach/mach_port.h` *)
 
@@ -374,23 +323,26 @@ let ipc_space_t = mach_port_t
 type mach_port_right_t = natural_t
 
 let mach_port_right_t = natural_t
+let mach_port_allocate = C.Functions.mach_port_allocate
+let mach_port_deallocate = C.Functions.mach_port_deallocate
+let mach_port_mod_refs = C.Functions.mach_port_mod_refs
 
-let mach_port_allocate =
-  foreign "mach_port_allocate"
-    (ipc_space_t @-> mach_port_right_t @-> ptr mach_port_name_t
-   @-> returning kern_return_t)
+type mach_port_delta_t = integer_t
 
-let mach_port_deallocate =
-  foreign "mach_port_deallocate"
-    (ipc_space_t @-> mach_port_name_t @-> returning kern_return_t)
+let mach_port_delta_t = integer_t
+
+(** MACH_PORT_RIGHT_SEND *)
+let mach_port_right_send : mach_port_right_t = C.Types.mach_port_right_send
 
 (** mach_msg_type_name_t constants for port rights *)
-let mach_msg_type_make_send : int32 = 20l
+let mach_msg_type_make_send : mach_msg_type_name_t =
+  C.Types.mach_msg_type_make_send
 
-let mach_port_insert_right =
-  foreign "mach_port_insert_right"
-    (ipc_space_t @-> mach_port_name_t @-> mach_port_t @-> int32_t
-   @-> returning kern_return_t)
+(** MACH_PORT_RIGHT_RECEIVE *)
+let mach_port_right_receive : mach_port_right_t =
+  C.Types.mach_port_right_receive
+
+let mach_port_insert_right = C.Functions.mach_port_insert_right
 
 (* let mach_port_names = *)
 (*   foreign "mach_port_names" (ipc_space_t @-> ptr mach_port_name_array_t @-> ptr mach_msg_type_number_t *)
@@ -402,23 +354,10 @@ let mach_port_insert_right =
         mach_port_name_t target_tport,
         int pid,
         mach_port_name_t *t);
-
-   TODO These uint64_t values should be natural_t according to the C headers.
-        Making them ints is convenient for now but should be changed later.
  *)
-let task_for_pid =
-  foreign "task_for_pid"
-    (uint64_t @-> pid_t @-> ptr uint64_t @-> returning kern_return_t)
-(* foreign "task_for_pid" (mach_port_name_t @-> pid_t @-> ptr mach_port_name_t @-> returning kern_return_t) *)
-
-let task_name_for_pid =
-  foreign "task_name_for_pid"
-    (mach_port_name_t @-> pid_t @-> ptr mach_port_name_t
-   @-> returning kern_return_t)
-
-let pid_for_task =
-  foreign "pid_for_task" (uint64_t @-> ptr pid_t @-> returning kern_return_t)
-(* foreign "pid_for_task" (mach_port_name_t @-> ptr pid_t @-> returning kern_return_t) *)
+let task_for_pid = C.Functions.task_for_pid
+let task_name_for_pid = C.Functions.task_name_for_pid
+let pid_for_task = C.Functions.pid_for_task
 
 (** Types defined in `mach/task_info.h` *)
 
@@ -430,18 +369,16 @@ type task_flavor_t = natural_t
 
 let task_flavor_t = natural_t
 
-type mach_error_t = natural_t
+type mach_error_t = kern_return_t
 (** Types defined in `mach/mach_error.h` *)
 
-let mach_error_t = natural_t
+let mach_error_t = kern_return_t
 
 (** Returns a string appropriate to the error argument given. *)
-let mach_error_string =
-  foreign "mach_error_string" (mach_error_t @-> returning string)
+let mach_error_string = C.Functions.mach_error_string
 
 (** Returns a string with the error system, subsystem and code. *)
-let mach_error_type =
-  foreign "mach_error_type" (mach_error_t @-> returning string)
+let mach_error_type = C.Functions.mach_error_type
 
 (** Types defined in `mach/types.h` *)
 
@@ -453,9 +390,10 @@ type thread_act_t = mach_port_t
 
 let thread_act_t = mach_port_t
 
-type thread_act_array_t = thread_act_t
+type thread_act_array_t = thread_act_t ptr
+(** An array of thread port names, as returned by [task_threads]. *)
 
-let thread_act_array_t = thread_act_t
+let thread_act_array_t = ptr thread_act_t
 
 (** Types defined in `mach/mach_types.h` *)
 
@@ -495,7 +433,10 @@ let thread_state_flavor_t = integer_t
 let x86_thread_state32 : thread_state_flavor_t = 1l
 let x86_float_state32 : thread_state_flavor_t = 2l
 let x86_exception_state32 : thread_state_flavor_t = 3l
-let x86_thread_state64 : thread_state_flavor_t = 4l
+
+let x86_thread_state64 : thread_state_flavor_t =
+  C.Types.x86_thread_state64_flavor
+
 let x86_float_state64 : thread_state_flavor_t = 5l
 let x86_exception_state64 : thread_state_flavor_t = 6l
 let x86_thread_state : thread_state_flavor_t = 7l
@@ -504,90 +445,64 @@ let x86_exception_state : thread_state_flavor_t = 9l
 let x86_debug_state32 : thread_state_flavor_t = 10l
 let x86_debug_state64 : thread_state_flavor_t = 11l
 let x86_debug_state : thread_state_flavor_t = 12l
-let x86_thread_state_count = 42
+let x86_thread_state_count = C.Types.x86_thread_state64_count
 let x86_float_state_count = 64
 
 (** Thread state flavors for ARM64 from `mach/arm/thread_status.h` *)
 
-let arm_thread_state64 : thread_state_flavor_t = 6l
+let arm_thread_state64 : thread_state_flavor_t =
+  C.Types.arm_thread_state64_flavor
+
 let arm_exception_state64 : thread_state_flavor_t = 7l
 let arm_neon_state64 : thread_state_flavor_t = 17l
-let arm_thread_state64_count = 68
+let arm_thread_state64_count = C.Types.arm_thread_state64_count
 let arm_neon_state64_count = 256
 
 (** x86_64 thread state structure *)
 
-type x86_thread_state64_t
+type x86_thread_state64_t = C.Types.x86_thread_state64
 
 let x86_thread_state64_t : x86_thread_state64_t structure typ =
-  structure "x86_thread_state64_t"
+  C.Types.x86_thread_state64
 
-let rax = field x86_thread_state64_t "__rax" uint64_t
-let rbx = field x86_thread_state64_t "__rbx" uint64_t
-let rcx = field x86_thread_state64_t "__rcx" uint64_t
-let rdx = field x86_thread_state64_t "__rdx" uint64_t
-let rdi = field x86_thread_state64_t "__rdi" uint64_t
-let rsi = field x86_thread_state64_t "__rsi" uint64_t
-let rbp = field x86_thread_state64_t "__rbp" uint64_t
-let rsp = field x86_thread_state64_t "__rsp" uint64_t
-let r8 = field x86_thread_state64_t "__r8" uint64_t
-let r9 = field x86_thread_state64_t "__r9" uint64_t
-let r10 = field x86_thread_state64_t "__r10" uint64_t
-let r11 = field x86_thread_state64_t "__r11" uint64_t
-let r12 = field x86_thread_state64_t "__r12" uint64_t
-let r13 = field x86_thread_state64_t "__r13" uint64_t
-let r14 = field x86_thread_state64_t "__r14" uint64_t
-let r15 = field x86_thread_state64_t "__r15" uint64_t
-let rip = field x86_thread_state64_t "__rip" uint64_t
-let rflags = field x86_thread_state64_t "__rflags" uint64_t
-let cs = field x86_thread_state64_t "__cs" uint64_t
-let fs = field x86_thread_state64_t "__fs" uint64_t
-let gs = field x86_thread_state64_t "__gs" uint64_t
-let () = seal x86_thread_state64_t
+let rax = C.Types.x86_rax
+let rbx = C.Types.x86_rbx
+let rcx = C.Types.x86_rcx
+let rdx = C.Types.x86_rdx
+let rdi = C.Types.x86_rdi
+let rsi = C.Types.x86_rsi
+let rbp = C.Types.x86_rbp
+let rsp = C.Types.x86_rsp
+let r8 = C.Types.x86_r8
+let r9 = C.Types.x86_r9
+let r10 = C.Types.x86_r10
+let r11 = C.Types.x86_r11
+let r12 = C.Types.x86_r12
+let r13 = C.Types.x86_r13
+let r14 = C.Types.x86_r14
+let r15 = C.Types.x86_r15
+let rip = C.Types.x86_rip
+let rflags = C.Types.x86_rflags
+let cs = C.Types.x86_cs
+let fs = C.Types.x86_fs
+let gs = C.Types.x86_gs
 
 (** ARM64 thread state structure *)
 
-type arm_thread_state64_t
+(* arm_thread_state64_t comes from the system header; see
+   type_description.ml. __x is a 29 element array. *)
+type arm_thread_state64_t = C.Types.arm_thread_state64
 
 let arm_thread_state64_t : arm_thread_state64_t structure typ =
-  structure "arm_thread_state64_t"
+  C.Types.arm_thread_state64
 
-let x0 = field arm_thread_state64_t "__x0" uint64_t
-let x1 = field arm_thread_state64_t "__x1" uint64_t
-let x2 = field arm_thread_state64_t "__x2" uint64_t
-let x3 = field arm_thread_state64_t "__x3" uint64_t
-let x4 = field arm_thread_state64_t "__x4" uint64_t
-let x5 = field arm_thread_state64_t "__x5" uint64_t
-let x6 = field arm_thread_state64_t "__x6" uint64_t
-let x7 = field arm_thread_state64_t "__x7" uint64_t
-let x8 = field arm_thread_state64_t "__x8" uint64_t
-let x9 = field arm_thread_state64_t "__x9" uint64_t
-let x10 = field arm_thread_state64_t "__x10" uint64_t
-let x11 = field arm_thread_state64_t "__x11" uint64_t
-let x12 = field arm_thread_state64_t "__x12" uint64_t
-let x13 = field arm_thread_state64_t "__x13" uint64_t
-let x14 = field arm_thread_state64_t "__x14" uint64_t
-let x15 = field arm_thread_state64_t "__x15" uint64_t
-let x16 = field arm_thread_state64_t "__x16" uint64_t
-let x17 = field arm_thread_state64_t "__x17" uint64_t
-let x18 = field arm_thread_state64_t "__x18" uint64_t
-let x19 = field arm_thread_state64_t "__x19" uint64_t
-let x20 = field arm_thread_state64_t "__x20" uint64_t
-let x21 = field arm_thread_state64_t "__x21" uint64_t
-let x22 = field arm_thread_state64_t "__x22" uint64_t
-let x23 = field arm_thread_state64_t "__x23" uint64_t
-let x24 = field arm_thread_state64_t "__x24" uint64_t
-let x25 = field arm_thread_state64_t "__x25" uint64_t
-let x26 = field arm_thread_state64_t "__x26" uint64_t
-let x27 = field arm_thread_state64_t "__x27" uint64_t
-let x28 = field arm_thread_state64_t "__x28" uint64_t
-let fp = field arm_thread_state64_t "__fp" uint64_t
-let lr = field arm_thread_state64_t "__lr" uint64_t
-let sp = field arm_thread_state64_t "__sp" uint64_t
-let pc = field arm_thread_state64_t "__pc" uint64_t
-let cpsr = field arm_thread_state64_t "__cpsr" uint32_t
-let pad = field arm_thread_state64_t "__pad" uint32_t
-let () = seal arm_thread_state64_t
+let x = C.Types.arm_x
+let fp = C.Types.arm_fp
+let lr = C.Types.arm_lr
+let sp = C.Types.arm_sp
+let pc = C.Types.arm_pc
+let cpsr = C.Types.arm_cpsr
+let pad = C.Types.arm_pad
 
 (** Types defined in `mach/exception_types.h` *)
 
@@ -597,102 +512,75 @@ let () = seal arm_thread_state64_t
 
     Code contains kern_return_t describing error. Subcode contains bad memory
     address *)
-let exc_bad_access : integer_t = 1l
+(* Exception constants come from the system headers; see type_description.ml.
+   A mask is (1 lsl exc), and exception types start at 1. *)
 
-(** Instruction failed.
+(** Machine-independent exception types. *)
 
-    Illegal or undefined instruction or operand *)
-let exc_bad_instruction : integer_t = 2l
+type exception_mask_t = natural_t
+(** Unsigned, unlike most of the exception scalars. *)
 
-(** Arithmetic exception.
-
-    Exact nature of exception is in code field *)
-let exc_arithmetic : integer_t = 3l
-
-(** Emulation instruction.
-
-    Emulation support instruction encountered. Details in code and subcode
-    fields *)
-let exc_emulation : integer_t = 4l
-
-(** Software generated exception.
-
-    Exact exception is in code field. Codes 0 - 0xFFFF reserved to hardware
-    Codes 0x10000 - 0x1FFFF reserved for OS emulation (Unix) *)
-let exc_software : integer_t = 5l
-
-(** Trace, breakpoint, etc. Details in code field. *)
-let exc_breakpoint : integer_t = 6l
-
-(** System calls. *)
-let exc_syscall : integer_t = 7l
-
-(** Mach system calls. *)
-let exc_mach_syscall : integer_t = 8l
-
-(** RPC alert. *)
-let exc_rpc_alert : integer_t = 9l
-
-(** Abnormal process exit. *)
-let exc_crash : integer_t = 10l
-
-(** Hit resource consumption limit. *)
-let exc_resource : integer_t = 11l
-
-(** Violated guarded resource protections. *)
-let exc_guard : integer_t = 12l
-
-(** Abnormal process exited to corpse state. *)
-let exc_corpse_notify : integer_t = 13l
+let exception_mask_t = natural_t
+let exc_bad_access : integer_t = C.Types.exc_bad_access
+let exc_bad_instruction : integer_t = C.Types.exc_bad_instruction
+let exc_arithmetic : integer_t = C.Types.exc_arithmetic
+let exc_emulation : integer_t = C.Types.exc_emulation
+let exc_software : integer_t = C.Types.exc_software
+let exc_breakpoint : integer_t = C.Types.exc_breakpoint
+let exc_syscall : integer_t = C.Types.exc_syscall
+let exc_mach_syscall : integer_t = C.Types.exc_mach_syscall
+let exc_rpc_alert : integer_t = C.Types.exc_rpc_alert
+let exc_crash : integer_t = C.Types.exc_crash
+let exc_resource : integer_t = C.Types.exc_resource
+let exc_guard : integer_t = C.Types.exc_guard
+let exc_corpse_notify : integer_t = C.Types.exc_corpse_notify
 
 (** EXC_SOFT_SIGNAL is used with EXC_SOFTWARE to indicate a Unix signal *)
-let exc_soft_signal : integer_t = 0x10003l
+let exc_soft_signal : integer_t = C.Types.exc_soft_signal
 
 (** Exception masks for use with task_set_exception_ports *)
-let exc_mask_bad_access : integer_t = Int32.shift_left 1l 0
 
-let exc_mask_bad_instruction : integer_t = Int32.shift_left 1l 1
-let exc_mask_arithmetic : integer_t = Int32.shift_left 1l 2
-let exc_mask_emulation : integer_t = Int32.shift_left 1l 3
-let exc_mask_software : integer_t = Int32.shift_left 1l 4
-let exc_mask_breakpoint : integer_t = Int32.shift_left 1l 5
-let exc_mask_syscall : integer_t = Int32.shift_left 1l 6
-let exc_mask_mach_syscall : integer_t = Int32.shift_left 1l 7
-let exc_mask_rpc_alert : integer_t = Int32.shift_left 1l 8
-let exc_mask_crash : integer_t = Int32.shift_left 1l 9
-let exc_mask_resource : integer_t = Int32.shift_left 1l 10
-let exc_mask_guard : integer_t = Int32.shift_left 1l 11
-let exc_mask_corpse_notify : integer_t = Int32.shift_left 1l 12
+let exc_mask_bad_access : exception_mask_t = C.Types.exc_mask_bad_access
 
-(** Mask for all exceptions *)
-let exc_mask_all : integer_t = 0x1FFFl
+let exc_mask_bad_instruction : exception_mask_t =
+  C.Types.exc_mask_bad_instruction
+
+let exc_mask_arithmetic : exception_mask_t = C.Types.exc_mask_arithmetic
+let exc_mask_emulation : exception_mask_t = C.Types.exc_mask_emulation
+let exc_mask_software : exception_mask_t = C.Types.exc_mask_software
+let exc_mask_breakpoint : exception_mask_t = C.Types.exc_mask_breakpoint
+let exc_mask_syscall : exception_mask_t = C.Types.exc_mask_syscall
+let exc_mask_mach_syscall : exception_mask_t = C.Types.exc_mask_mach_syscall
+let exc_mask_rpc_alert : exception_mask_t = C.Types.exc_mask_rpc_alert
+let exc_mask_crash : exception_mask_t = C.Types.exc_mask_crash
+let exc_mask_resource : exception_mask_t = C.Types.exc_mask_resource
+let exc_mask_guard : exception_mask_t = C.Types.exc_mask_guard
+let exc_mask_corpse_notify : exception_mask_t = C.Types.exc_mask_corpse_notify
+
+(** EXC_MASK_ALL. Excludes EXC_MASK_CRASH and EXC_MASK_CORPSE_NOTIFY, which
+    belong to the crash reporter rather than to a debugger. *)
+let exc_mask_all : exception_mask_t = C.Types.exc_mask_all
+
+(** EXC_TYPES_COUNT: the number of exception types, and so the largest number of
+    handlers a task can have registered. *)
+let exc_types_count = C.Types.exc_types_count
 
 (** Machine-independent exception behaviors *)
 
-(** Send a catch_exception_raise message including the identity. *)
-let exception_default : integer_t = 1l
-
-(** Send a catch_exception_raise_state message including the thread state. *)
-let exception_state : integer_t = 2l
-
-(** Send a catch_exception_raise_state_identity message including the thread
-    identity and state. *)
-let exception_state_identity : integer_t = 3l
-
-(** Send a catch_exception_raise_identity_protected message including protected
-    task and thread identity. *)
-let exception_identity_protected : integer_t = 4l
-
-(** Send a catch_exception_raise_state_identity_protected message including
-    protected task and thread identity plus the thread state. *)
-let exception_state_identity_protected : integer_t = 5l
+let exception_default : integer_t = C.Types.exception_default
+let exception_state : integer_t = C.Types.exception_state
+let exception_state_identity : integer_t = C.Types.exception_state_identity
 
 (** Send 64-bit code and subcode in the exception header *)
-let mach_exception_codes : integer_t = 0x80000000l
+let mach_exception_codes : integer_t = C.Types.mach_exception_codes
 
-type c_int = Unsigned.uint32
+(** THREAD_STATE_NONE: the flavor to pass to task_set_exception_ports when the
+    behavior is EXCEPTION_DEFAULT, i.e. when no thread state is wanted. *)
+let thread_state_none : thread_state_flavor_t = C.Types.thread_state_none
 
-let c_int = Ctypes_static.Primitive Ctypes_primitive_types.Uint32_t
+type c_int = int32
+
+let c_int = int32_t
 
 type exception_type_t = c_int
 
@@ -706,10 +594,6 @@ type mach_exception_data_type_t = int64
 type exception_behavior_t = c_int
 
 let exception_behavior_t = c_int
-
-type exception_mask_t = integer_t
-
-let exception_mask_t = integer_t
 let exception_mask_array_t = ptr exception_mask_t
 let exception_behavior_array_t = ptr exception_behavior_t
 
@@ -723,78 +607,46 @@ let exception_flavor_array_t = ptr thread_state_flavor_t
 let mach_port_array_t = ptr mach_port_t
 
 (** Routine task_terminate *)
-let task_terminate =
-  foreign "task_terminate" (task_t @-> returning kern_return_t)
+let task_terminate = C.Functions.task_terminate
 
 (** Routine task_threads *)
-let task_threads =
-  foreign "task_threads"
-    (task_t @-> ptr thread_act_array_t @-> ptr mach_msg_type_number_t
-   @-> returning kern_return_t)
+let task_threads = C.Functions.task_threads
 
 (** Routine mach_ports_register *)
-let mach_ports_register =
-  foreign "mach_ports_register"
-    (task_t @-> mach_port_array_t @-> mach_msg_type_number_t
-   @-> returning kern_return_t)
+let mach_ports_register = C.Functions.mach_ports_register
 
 (** Routine mach_ports_lookup *)
-let mach_ports_lookup =
-  foreign "mach_ports_lookup"
-    (task_t @-> ptr mach_port_array_t @-> mach_msg_type_number_t
-   @-> returning kern_return_t)
+let mach_ports_lookup = C.Functions.mach_ports_lookup
 
 (** Routine task_info *)
-let task_info =
-  foreign "task_info"
-    (task_name_t @-> task_flavor_t @-> task_info_t
-   @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+let task_info = C.Functions.task_info
 
 (** Routine task_set_info *)
-let task_set_info =
-  foreign "task_set_info"
-    (task_name_t @-> task_flavor_t @-> task_info_t @-> mach_msg_type_number_t
-   @-> returning kern_return_t)
+let task_set_info = C.Functions.task_set_info
 
 (** Routine task_suspend *)
-let task_suspend = foreign "task_suspend" (task_t @-> returning kern_return_t)
+let task_suspend = C.Functions.task_suspend
 
 (** Routine task_resume *)
-let task_resume = foreign "task_resume" (task_t @-> returning kern_return_t)
+let task_resume = C.Functions.task_resume
 
 (** Routine task_get_special_port *)
-let task_get_special_port =
-  foreign "task_get_special_port"
-    (task_t @-> task_special_port_t @-> ptr mach_port_t
-   @-> returning kern_return_t)
+let task_get_special_port = C.Functions.task_get_special_port
 
 (** Routine task_set_special_port *)
-let task_set_specical_port =
-  foreign "task_set_special_port"
-    (task_t @-> int @-> mach_port_t @-> returning kern_return_t)
+let task_set_special_port = C.Functions.task_set_special_port
 
 (** Routine thread_create *)
-let thread_create =
-  foreign "thread_create"
-    (task_t @-> ptr thread_act_t @-> returning kern_return_t)
+let thread_create = C.Functions.thread_create
 
 (** Routine thread_create_running *)
-let thread_create_running =
-  foreign "thread_create_running"
-    (task_t @-> ptr thread_state_flavor_t @-> ptr thread_state_t
-   @-> mach_msg_type_number_t @-> ptr thread_act_t @-> returning kern_return_t)
+let thread_create_running = C.Functions.thread_create_running
 
 (** Routine thread_get_state *)
-let thread_get_state =
-  foreign "thread_get_state"
-    (thread_act_t @-> thread_state_flavor_t @-> ptr thread_state_t
-   @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+let thread_get_state = C.Functions.thread_get_state
 
 (** Routine thread_set_state *)
-let thread_set_state =
-  foreign "thread_set_state"
-    (thread_act_t @-> thread_state_flavor_t @-> ptr thread_state_t
-   @-> mach_msg_type_number_t @-> returning kern_return_t)
+let thread_set_state = C.Functions.thread_set_state
 
 (** Types and functions from `mach/thread_info.h` *)
 
@@ -805,58 +657,74 @@ type thread_flavor_t = natural_t
 let thread_flavor_t = natural_t
 
 (** Routine thread_info *)
-let thread_info =
-  foreign "thread_info"
-    (thread_act_t @-> thread_flavor_t @-> thread_info_t
-   @-> ptr mach_msg_type_number_t @-> returning kern_return_t)
+let thread_info = C.Functions.thread_info
 
 (** Thread info flavors from mach/thread_info.h *)
-let thread_basic_info : thread_flavor_t = 3l
+let thread_basic_info : thread_flavor_t = C.Types.thread_basic_info_flavor
 
-let thread_identifier_info : thread_flavor_t = 4l
-let thread_basic_info_count = 10
-let thread_identifier_info_count = 6
+let thread_identifier_info : thread_flavor_t =
+  C.Types.thread_identifier_info_flavor
 
-type thread_basic_info_t
-(** Thread basic info structure *)
+let thread_basic_info_count = C.Types.thread_basic_info_count
+let thread_identifier_info_count = C.Types.thread_identifier_info_count
+
+type thread_basic_info_t = C.Types.thread_basic_info
 
 let thread_basic_info_t : thread_basic_info_t structure typ =
-  structure "thread_basic_info"
+  C.Types.thread_basic_info
 
-let user_time = field thread_basic_info_t "user_time" (array 2 int32_t)
-let system_time = field thread_basic_info_t "system_time" (array 2 int32_t)
-let cpu_usage = field thread_basic_info_t "cpu_usage" int32_t
-let policy = field thread_basic_info_t "policy" int32_t
-let run_state = field thread_basic_info_t "run_state" int32_t
-let flags = field thread_basic_info_t "flags" int32_t
-let suspend_count = field thread_basic_info_t "suspend_count" int32_t
-let sleep_time = field thread_basic_info_t "sleep_time" int32_t
-let () = seal thread_basic_info_t
+let user_time = C.Types.tbi_user_time
+let system_time = C.Types.tbi_system_time
+let cpu_usage = C.Types.tbi_cpu_usage
+let policy = C.Types.tbi_policy
+let run_state = C.Types.tbi_run_state
+let flags = C.Types.tbi_flags
+let suspend_count = C.Types.tbi_suspend_count
+let sleep_time = C.Types.tbi_sleep_time
 
-type thread_identifier_info_t
-(** Thread identifier info structure *)
+type thread_identifier_info_t = C.Types.thread_identifier_info
 
 let thread_identifier_info_t : thread_identifier_info_t structure typ =
-  structure "thread_identifier_info"
+  C.Types.thread_identifier_info
 
-let thread_id = field thread_identifier_info_t "thread_id" uint64_t
-let thread_handle = field thread_identifier_info_t "thread_handle" uint64_t
-let dispatch_qaddr = field thread_identifier_info_t "dispatch_qaddr" uint64_t
-let () = seal thread_identifier_info_t
+let thread_id = C.Types.tii_thread_id
+let thread_handle = C.Types.tii_thread_handle
+let dispatch_qaddr = C.Types.tii_dispatch_qaddr
 
 (** Routine thread_suspend *)
-let thread_suspend =
-  foreign "thread_suspend" (thread_act_t @-> returning kern_return_t)
+let thread_suspend = C.Functions.thread_suspend
+
+(** Routine mach_vm_region *)
+let mach_vm_region = C.Functions.mach_vm_region
+
+type vm_region_flavor_t = integer_t
+(** Selects which vm_region info structure is returned. *)
+
+let vm_region_flavor_t = integer_t
+
+(** VM_REGION_BASIC_INFO_64 and its count, for use with [mach_vm_region] *)
+let vm_region_basic_info_64_flavor : vm_region_flavor_t =
+  C.Types.vm_region_basic_info_64_flavor
+
+let vm_region_basic_info_count_64 = C.Types.vm_region_basic_info_count_64
+
+(** Routine thread_abort *)
+let thread_abort = C.Functions.thread_abort
+
+(** Routine thread_abort_safely *)
+let thread_abort_safely = C.Functions.thread_abort_safely
+
+(** Routine thread_set_exception_ports *)
+let thread_set_exception_ports = C.Functions.thread_set_exception_ports
+
+(** Routine thread_get_exception_ports *)
+let thread_get_exception_ports = C.Functions.thread_get_exception_ports
 
 (** Routine thread_resume *)
-let thread_resume =
-  foreign "thread_resume" (thread_act_t @-> returning kern_return_t)
+let thread_resume = C.Functions.thread_resume
 
 (** Routine task_set_exception_ports *)
-let task_set_exception_ports =
-  foreign "task_set_exception_ports"
-    (task_t @-> exception_mask_t @-> mach_port_t @-> exception_behavior_t
-   @-> thread_state_flavor_t @-> returning kern_return_t)
+let task_set_exception_ports = C.Functions.task_set_exception_ports
 
 (* typedef mach_port_t             exception_handler_t;  *)
 type exception_handler_t = mach_port_t
@@ -867,20 +735,12 @@ let exception_handler_t = mach_port_t
 let exception_handler_array_t = ptr exception_handler_t
 
 (** Routine task_get_exception_ports *)
-let task_get_exception_ports =
-  foreign "task_get_exception_ports"
-    (task_t @-> exception_mask_t @-> exception_mask_array_t
-   @-> ptr mach_msg_type_number_t @-> exception_handler_array_t
-   @-> exception_behavior_array_t @-> exception_flavor_array_t
-   @-> returning kern_return_t)
+let task_get_exception_ports = C.Functions.task_get_exception_ports
 
 (** Types and functions defined in `mach/mach_init.h` *)
 
-let mach_thread_self : unit -> mach_port_t =
-  foreign "mach_thread_self" (void @-> returning mach_port_t)
-
-let mach_task_self : unit -> mach_port_t =
-  foreign "mach_task_self" (void @-> returning mach_port_t)
+let mach_thread_self = C.Functions.mach_thread_self
+let mach_task_self = C.Functions.mach_task_self
 
 (** Types from `sys/_types.h` *)
 let uid_t = uint32_t
@@ -989,58 +849,27 @@ let pbi_status_to_string = function
 (* type proc_pidinfo_flavors = *)
 (*  | PROC_PIDT_SHORTBSDINFO -> 13 *)
 
-type proc_bsdshortinfo
+type proc_bsdshortinfo = C.Types.proc_bsdshortinfo
 
 let proc_bsdshortinfo : proc_bsdshortinfo structure typ =
-  structure "proc_bsdshortinfo"
+  C.Types.proc_bsdshortinfo
 
-let pbsi_pid = field proc_bsdshortinfo "pbi_pid" uint32_t (* process id  *)
-
-let pbsi_ppid =
-  field proc_bsdshortinfo "pbi_ppid" uint32_t (* process parent id *)
-
-let pbsi_pgid =
-  field proc_bsdshortinfo "pbi_pgid" uint32_t (* process perp id  *)
-
-let pbsi_status =
-  field proc_bsdshortinfo "pbsi_status"
-    uint32_t (*  p_stat value, SZOMB, SRUN, etc *)
-
-let pbsi_comm = field proc_bsdshortinfo "pbsi_comm" (array 16 char)
-
-(* upto 16 characters of process name *)
-let pbsi_flags =
-  field proc_bsdshortinfo "bpsi_flags" uint32_t (* 64bit; emulated etc *)
-
-let pbsi_uid =
-  field proc_bsdshortinfo "bpsi_uid" uid_t (* current uid on process *)
-
-let pbsi_gid =
-  field proc_bsdshortinfo "bpsi_gid" gid_t (* current gid on process *)
-
-let pbsi_ruid =
-  field proc_bsdshortinfo "bpsi_ruid" uid_t (* current ruid on process *)
-
-let pbsi_rgid =
-  field proc_bsdshortinfo "bpsi_rgid" gid_t (* current rgid on process *)
-
-let pbsi_svuid =
-  field proc_bsdshortinfo "bpsi_svuid" uid_t (* current svuid on process *)
-
-let pbsi_svgid =
-  field proc_bsdshortinfo "bpsi_svgid" gid_t (* current svgid on process *)
-
-let pbsi_rfu =
-  field proc_bsdshortinfo "bpsi_rfu" uint32_t (* reserved for future use *)
-
-let () = seal proc_bsdshortinfo
+let pbsi_pid = C.Types.pbsi_pid
+let pbsi_ppid = C.Types.pbsi_ppid
+let pbsi_pgid = C.Types.pbsi_pgid
+let pbsi_status = C.Types.pbsi_status
+let pbsi_comm = C.Types.pbsi_comm
+let pbsi_flags = C.Types.pbsi_flags
+let pbsi_uid = C.Types.pbsi_uid
+let pbsi_gid = C.Types.pbsi_gid
+let pbsi_ruid = C.Types.pbsi_ruid
+let pbsi_rgid = C.Types.pbsi_rgid
+let pbsi_svuid = C.Types.pbsi_svuid
+let pbsi_svgid = C.Types.pbsi_svgid
+let pbsi_rfu = C.Types.pbsi_rfu
 
 (* int proc_pidinfo(int pid, int flavor, uint64_t arg, void *buffer, int buffersize); *)
-let proc_pidinfo =
-  foreign "proc_pidinfo"
-    (pid_t @-> int @-> uint64_t @-> ptr void @-> int @-> returning int)
+let proc_pidinfo = C.Functions.proc_pidinfo
 
 (* int proc_regionfilename(int pid, uint64_t address, void * buffer, uint32_t buffersize) *)
-let proc_regionfilename =
-  foreign "proc_regionfilename"
-    (pid_t @-> uint64_t @-> ptr void @-> uint32_t @-> returning int)
+let proc_regionfilename = C.Functions.proc_regionfilename
